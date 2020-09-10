@@ -1,0 +1,19 @@
+<h1>Inlcude image</h1>
+<img src="assets/images/home.png" alt="">
+<img [src]="imageUrl" alt="">
+
+<ul>
+  <li *ngFor="let i of list; let j = index">
+    {{i.title}} -- {{j}}
+  </li>
+</ul>
+
+<div *ngIf="flag">Select true</div>
+<div *ngIf="!flag">Select false</div>
+
+<div [ngClass]="{'red': true}">AAA</div>
+
+<button (click)="handleClick($event)">click</button>
+
+<input type="text" [(ngModel)]="keywords">
+{{keywords}}

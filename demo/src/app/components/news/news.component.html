@@ -1,0 +1,20 @@
+<app-header></app-header>
+<h2>{{ title }}</h2>
+<h2>{{ sayHello() + ' Messi' }}</h2>
+<h2>{{ club }}</h2>
+
+<div title="This is div">cursor on</div>
+<div [title]="title">cursor on</div>
+
+<h1></h1>
+<div>{{ title }}</div>
+<div [innerHTML]="content"></div>
+<div>{{ 1+1 }}</div>
+
+<ol>
+  <li *ngFor="let item of food">
+    <h1>
+      {{item}}
+    </h1>
+  </li>
+</ol>

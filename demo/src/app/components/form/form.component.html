@@ -1,0 +1,25 @@
+<h2>Employee Record</h2>
+
+<div class="people_list">
+  <ul>
+    <li>Name: <input type="text" class="form_input" [(ngModel)]="peopleInfo.username"></li>
+    <li>Gender:
+      <input type="radio" value="1" name="gender" id="male" [(ngModel)]="peopleInfo.gender"><label for="male">Male</label>
+      <input type="radio" value="2" name="gender" id="female" [(ngModel)]="peopleInfo.gender"><label for="female">Female</label>
+    </li>
+    <li>City:
+      <select id="city" name="city" [(ngModel)]="peopleInfo.city">
+        <option *ngFor="let city of peopleInfo.cities" [value]="city">{{city}}</option>
+     </select>
+    </li>
+    <li>Hobby:
+      <span *ngFor="let hobby of peopleInfo.hobbies">
+        <input type="checkbox" [id]="hobby.title" [(ngModel)]="hobby.checked"/> <label [for]="hobby.title">{{hobby.title}}</label>
+      </span>
+    </li>
+  </ul>
+
+  <button (click)="doSubmit()" class="submit">peopleInfo</button>
+
+  <pre>{{peopleInfo | json}}</pre>
+</div>
