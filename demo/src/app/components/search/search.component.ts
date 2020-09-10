@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
+import { StorageService } from '../../services/storage.service'
+
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
@@ -7,23 +9,31 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SearchComponent implements OnInit {
 
-  public todoLists: string[] = []
+  public todoLists: string[] = [];
   public keyword: string = ''
 
-  constructor() { }
+  constructor(private storage: StorageService) {
+
+  }
 
   ngOnInit(): void {
+    let searchList: any = this.storage.get('searchList');
+    if ( searchList ) {
+      this.todoLists = searchList;
+    }
   }
 
   public handleSearch(): void {
-    if ( this.todoLists.indexOf(this.keyword) == -1 ) {
-      this.todoLists.push(this.keyword)
+    if ( this.keyword != '' && this.todoLists.indexOf(this.keyword) == -1 ) {
+      this.todoLists.push(this.keyword);
+      this.storage.set('searchList', this.todoLists);
     }
-    this.keyword = ''
+    this.keyword = '';
   }
 
   public removeKey(idx: number): void {
     this.todoLists.splice(idx, 1)
+      this.storage.set('searchList', this.todoLists);
   }
 
 }
