@@ -1,0 +1,17 @@
+<p>dom works!</p>
+
+<div id="box">this is box</div>
+
+<br/>
+
+<div id="box1" *ngIf="flag">
+  this is box1
+</div>
+
+<div #mybox>
+  this is box2
+</div>
+
+<app-header #header></app-header>
+
+<button (click)="getChildRun()">run header.run</button>
