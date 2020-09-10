@@ -1,3 +1,47 @@
-<h1>Starting Project</h1>
-<!-- <button mat-raised-button color="primary">Primary</button> -->
-<button nz-button nzType="primary">OK</button>
+<div id="app">
+  <nz-layout class="layout">
+    <nz-header class="header">
+      <div class="wrap">
+        <div class="left">
+          <h1>Music</h1>
+          <ul nz-menu nzTheme="dark" nzMode="horizontal">
+            <li nz-menu-item>Discovery</li>
+            <li nz-menu-item>Musics</li>
+          </ul>
+        </div>
+        <div class="right">
+          <div class="search">
+            <nz-input-group [nzSuffix]="suffixTemplate">
+              <input type="text" nz-input placeholder="Search"/>
+            </nz-input-group>
+            <ng-template #suffixTemplate>
+              <i nz-icon [nzType]="'search'"></i>
+            </ng-template>
+          </div>
+          <div class="member">
+            <div class="no-login">
+              <ul nz-menu nzTheme="dark" nzMode="horizontal">
+                <li nz-submenu>
+                  <div title>
+                    <span>Login</span>
+                    <i nz-icon type="down" nzTheme="outline"></i>
+                  </div>
+                  <ul>
+                    <li nz-menu-item>
+                      <i nz-icon type="mobile" nzTheme="outline"></i>
+                      Login
+                    </li>
+                    <li nz-menu-item>
+                      <i nz-icon type="user-add" nzTheme="outline"></i>
+                      SignUp
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nz-header>
+  </nz-layout>
+</div>
