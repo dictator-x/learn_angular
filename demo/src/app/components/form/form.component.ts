@@ -25,7 +25,8 @@ export class FormComponent implements OnInit {
         title: 'Sleeping',
         checked: true
       }
-    ]
+    ],
+    mark: ''
   }
 
   constructor() { }

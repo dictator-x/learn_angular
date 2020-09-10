@@ -17,6 +17,9 @@
         <input type="checkbox" [id]="hobby.title" [(ngModel)]="hobby.checked"/> <label [for]="hobby.title">{{hobby.title}}</label>
       </span>
     </li>
+    <li>Mark:
+      <textarea name="mark" id="mark" cols="30" rows="10" [(ngModel)]="peopleInfo.mark"></textarea>
+    </li>
   </ul>
 
   <button (click)="doSubmit()" class="submit">peopleInfo</button>
