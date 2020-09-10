@@ -1,0 +1,9 @@
+<div class="search">
+  <input type="text" [(ngModel)]="keyword"> <button (click)="handleSearch()">Search</button>
+  <hr/>
+  <ul>
+    <li *ngFor="let item of todoLists; let i = index">
+      {{item}} ------ <button (click)="removeKey(i)">X</button>
+    </li>
+  </ul>
+</div>

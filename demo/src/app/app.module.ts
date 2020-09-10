@@ -8,6 +8,8 @@ import { NewsComponent } from './components/news/news.component';
 import { HomeComponent } from './components/home/home.component';
 import { HeaderComponent } from './components/header/header.component';
 import { FormComponent } from './components/form/form.component';
+import { SearchComponent } from './components/search/search.component';
+import { TodolistComponent } from './components/todolist/todolist.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +17,9 @@ import { FormComponent } from './components/form/form.component';
     NewsComponent,
     HomeComponent,
     HeaderComponent,
-    FormComponent
+    FormComponent,
+    SearchComponent,
+    TodolistComponent
   ],
   imports: [
     BrowserModule,
