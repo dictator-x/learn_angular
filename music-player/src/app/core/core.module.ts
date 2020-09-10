@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { registerLocaleData } from '@angular/common';
+import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import en from '@angular/common/locales/en';
 
 import { AppRoutingModule } from '../app-routing.module';
@@ -26,7 +27,8 @@ registerLocaleData(en);
   exports: [
     ShareModule,
     AppRoutingModule
-  ]
+  ],
+  providers: [{ provide: NZ_I18N, useValue: en_US }],
 })
 export class CoreModule {
   constructor(@SkipSelf() @Optional() parentModule: CoreModule) {
