@@ -21,7 +21,7 @@ registerLocaleData(en);
     ServiceModule,
     PageModule,
     ShareModule,
-    AppRoutingModule,
+    AppRoutingModule
   ],
   exports: [
     ShareModule,
