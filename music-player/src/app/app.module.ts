@@ -1,13 +1,8 @@
 import { NgModule } from '@angular/core';
-import { NZ_I18N } from 'ng-zorro-antd/i18n';
-import { en_US } from 'ng-zorro-antd/i18n';
-import { registerLocaleData } from '@angular/common';
-import en from '@angular/common/locales/en';
+import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 
-import { CoreModule } from './core/core.module'
+import { CoreModule } from './core/core.module';
 import { AppComponent } from './app.component';
-
-registerLocaleData(en);
 
 @NgModule({
   declarations: [

@@ -1,19 +1,37 @@
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { NgModule, Optional, SkipSelf } from '@angular/core';
+import { registerLocaleData } from '@angular/common';
+import en from '@angular/common/locales/en';
 
 import { AppRoutingModule } from '../app-routing.module';
+import { ServiceModule } from '../service/service.module';
+import { PageModule } from '../page/page.module'
+import { ShareModule } from '../share/share.module'
 
-
+registerLocaleData(en);
 
 @NgModule({
   declarations: [],
   imports: [
-    AppRoutingModule,
     BrowserAnimationsModule,
     BrowserModule,
     HttpClientModule,
+    ServiceModule,
+    PageModule,
+    ShareModule,
+    AppRoutingModule,
+  ],
+  exports: [
+    ShareModule,
+    AppRoutingModule
   ]
 })
-export class CoreModule { }
+export class CoreModule {
+  constructor(@SkipSelf() @Optional() parentModule: CoreModule) {
+    if ( parentModule ) {
+      throw new Error('CoreModule can only imported by AppModule');
+    }
+  }
+}

@@ -1,18 +1,19 @@
 import { NgModule } from '@angular/core';
-import { NgZorroAntdModule } from 'ng-zorro-antd'
+import { NgZorroAntdModule } from 'ng-zorro-antd';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common'
+import { CommonModule } from '@angular/common';
 
 
 
 @NgModule({
   declarations: [],
   imports: [
-    CommonModule
+    CommonModule,
     FormsModule,
     NgZorroAntdModule
   ],
-  export: [
+  exports: [
+    CommonModule,
     FormsModule,
     NgZorroAntdModule
   ]
