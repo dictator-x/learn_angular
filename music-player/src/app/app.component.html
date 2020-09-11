@@ -15,7 +15,7 @@
               <input type="text" nz-input placeholder="Search"/>
             </nz-input-group>
             <ng-template #suffixTemplate>
-              <i nz-icon [nzType]="'search'"></i>
+              <i nz-icon nzType="search"></i>
             </ng-template>
           </div>
           <div class="member">
@@ -43,5 +43,11 @@
         </div>
       </div>
     </nz-header>
+    <nz-content class="content">
+      <router-outlet></router-outlet>
+    </nz-content>
+    <nz-footer class="footer">
+      Ant Design @2019 Implement By Angular
+    </nz-footer>
   </nz-layout>
 </div>
