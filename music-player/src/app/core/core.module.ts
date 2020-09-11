@@ -8,8 +8,8 @@ import en from '@angular/common/locales/en';
 
 import { AppRoutingModule } from '../app-routing.module';
 import { ServiceModule } from '../service/service.module';
-import { PageModule } from '../page/page.module'
-import { ShareModule } from '../share/share.module'
+import { PageModule } from '../page/page.module';
+import { ShareModule } from '../share/share.module';
 
 registerLocaleData(en);
 
