@@ -17,7 +17,10 @@ import { DomComponent } from './components/dom/dom.component';
 import { TransitionComponent } from './components/transition/transition.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { MainComponent } from './components/main/main.component';
-import { RequestComponent } from './components/request/request.component'
+import { RequestComponent } from './components/request/request.component';
+import { JordanComponent } from './components/jordan/jordan.component';
+import { KobeComponent } from './components/kobe/kobe.component';
+import { MessiComponent } from './components/messi/messi.component'
 
 @NgModule({
   declarations: [
@@ -32,7 +35,10 @@ import { RequestComponent } from './components/request/request.component'
     TransitionComponent,
     FooterComponent,
     MainComponent,
-    RequestComponent
+    RequestComponent,
+    JordanComponent,
+    KobeComponent,
+    MessiComponent
   ],
   imports: [
     BrowserModule,

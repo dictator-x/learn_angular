@@ -1,0 +1,11 @@
+<p>jordan works!</p>
+
+<br>
+
+<a [routerLink]="['/messi/']">Messi</a>
+
+<ul>
+  <li *ngFor="let item of list; let key=index;">
+    <a [routerLink]="['/messi', 1]" [queryParams]="{aid:key}">{{item}}</a>
+  </li>
+</ul>
