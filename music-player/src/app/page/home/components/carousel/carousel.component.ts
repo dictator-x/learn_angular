@@ -1,4 +1,5 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import type { TemplateRef } from '@angular/core';
 
 @Component({
   selector: 'app-carousel',
