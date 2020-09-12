@@ -11,42 +11,7 @@ import type { TemplateRef } from '@angular/core';
 
 @Component({
   selector: 'app-carousel',
-  styles: [`
-    .carousel{
-      padding: 10px 0;
-      background-color: #001529;
-      .wrap{
-        position: relative;
-        .dot{
-          display: block;
-          width: 20px;
-          height: 20px;
-          overflow: hidden;
-          background: url('./banner.png') 3px -343px;
-          cursor: pointer;
-          &.active{
-            background-position: -16px -343px;
-          }
-        }
-        .arrow{
-          display: block;
-          position: absolute;
-          width: 37px;
-          top:50%;
-          margin-top: -20px;
-          color: #fff;
-          font-size: 40px;
-          cursor: pointer;
-          &.left{
-            left: -68px;
-          }
-          &.right{
-            right: -68px;
-          }
-        }
-      }
-    }
-  `],
+  styleUrls: ['./carousel.component.less'],
   template: `
     <div class="carousel">
       <div class="wrap">
