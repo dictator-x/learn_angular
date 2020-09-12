@@ -2,7 +2,11 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { NzCarouselComponent } from 'ng-zorro-antd';
 
 import { HomeService } from 'src/app/service/home.service';
-import type { Banner } from 'src/app/data-types/common.types';
+import type {
+  Banner,
+  HotTag,
+  SongSheet
+} from 'src/app/data-types/common.types';
 
 @Component({
   selector: 'app-home',
@@ -12,6 +16,8 @@ import type { Banner } from 'src/app/data-types/common.types';
 export class HomeComponent implements OnInit {
 
   public banners: Banner[] = [];
+  public hotTags: HotTag[] = [];
+  public songSheets: SongSheet[] = [];
   public carouselActiveIndex: number = 0;
 
   @ViewChild(NzCarouselComponent, {static: true})
@@ -25,6 +31,12 @@ export class HomeComponent implements OnInit {
     this.homeService.getBanners().subscribe(banners => {
       this.banners = banners;
     });
+    this.homeService.getHotTags().subscribe(tags => {
+      this.hotTags = tags;
+    })
+    this.homeService.getPersonalSheetList().subscribe(result => {
+      this.songSheets = result;
+    })
   }
 
   public onBeforeChange(event: any): void {

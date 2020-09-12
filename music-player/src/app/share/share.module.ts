@@ -3,19 +3,22 @@ import { NgZorroAntdModule } from 'ng-zorro-antd';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
+import { UiModule } from './ui/ui.module'
 
 
 @NgModule({
   declarations: [],
   imports: [
-    CommonModule,
-    FormsModule,
-    NgZorroAntdModule
+    // CommonModule,
+    // FormsModule,
+    // NgZorroAntdModule,
+    // UiModule
   ],
   exports: [
     CommonModule,
     FormsModule,
-    NgZorroAntdModule
+    NgZorroAntdModule,
+    UiModule
   ]
 })
 export class ShareModule { }

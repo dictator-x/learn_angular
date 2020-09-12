@@ -17,4 +17,41 @@
       </div>
     </nz-carousel>
   </app-carousel>
+
+  <div class="main">
+    <div class="wrap">
+
+      <div class="left">
+        <div class="sec">
+
+          <div class="up">
+            <div class="navs">
+              <h2>
+                <i></i>
+                <a href="">HOT</a>
+              </h2>
+              <nav>
+                <a *ngFor="let tag of hotTags">{{tag.name}}</a>
+              </nav>
+            </div>
+            <a>
+              more
+              <i nz-icon nzType="arrow-right" nzTheme="outline"></i>
+            </a>
+          </div>
+
+          <div class="down">
+            <div class="down-wrap">
+              <app-song-card></app-song-card>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="right">
+      </div>
+
+    </div>
+  </div>
 </div>
