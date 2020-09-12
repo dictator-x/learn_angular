@@ -13,6 +13,7 @@ import { CountNumberFormatterPipe } from '../pipe/count-number-formatter.pipe'
   imports: [
   ],
   exports: [
+    SongCardComponent
   ]
 })
 export class UiModule { }
