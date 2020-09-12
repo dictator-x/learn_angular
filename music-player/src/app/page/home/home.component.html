@@ -42,7 +42,11 @@
 
           <div class="down">
             <div class="down-wrap">
-              <app-song-card></app-song-card>
+              <app-song-card
+                class="sheet-item"
+                *ngFor="let song of songSheets"
+                [song] = "song"
+              ></app-song-card>
             </div>
           </div>
 

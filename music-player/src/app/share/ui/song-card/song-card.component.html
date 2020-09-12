@@ -1,1 +1,13 @@
-<p>song-card works!</p>
+<ng-container>
+  <a class="cover" href="">
+    <img [src]="song.picUrl" [alt]="song.name">
+    <div class="bottom">
+      <div class="num">
+        <i class="icon erji"></i>
+        <span>{{song.playCount | countNumberFormatter}}</span>
+      </div>
+      <i class="icon play"></i>
+    </div>
+  </a>
+  <span class="dec">{{song.name}}</span>
+</ng-container>

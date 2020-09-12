@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+
+import { SongSheet } from 'src/app/data-types/common.types'
 
 @Component({
   selector: 'app-song-card',
@@ -6,6 +8,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./song-card.component.less']
 })
 export class SongCardComponent implements OnInit {
+
+  @Input() public song: SongSheet;
 
   constructor() { }
 

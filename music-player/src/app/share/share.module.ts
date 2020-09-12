@@ -3,11 +3,12 @@ import { NgZorroAntdModule } from 'ng-zorro-antd';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
-import { UiModule } from './ui/ui.module'
+import { UiModule } from './ui/ui.module';
 
 
 @NgModule({
-  declarations: [],
+  declarations: [
+  ],
   imports: [
     // CommonModule,
     // FormsModule,
