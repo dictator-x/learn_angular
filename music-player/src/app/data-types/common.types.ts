@@ -12,9 +12,10 @@ export type HotTag = {
 
 export type SongSheet = {
   id: number;
-  name: string,
-  picUrl: string,
+  name: string;
+  picUrl: string;
   playCount: number;
+  tracks: Song[];
 };
 
 export type Singer = {
@@ -22,4 +23,13 @@ export type Singer = {
   name: string;
   picUrl: string;
   albumSize: number;
+}
+
+export type Song = {
+  id: number;
+  name: string;
+  url: string;
+  ar: Singer[];
+  al: { id: number; name: string; picUrl: string };
+  dt: number;
 }

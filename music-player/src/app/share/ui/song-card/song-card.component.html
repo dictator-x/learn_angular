@@ -1,12 +1,12 @@
 <ng-container>
-  <a class="cover" href="">
+  <a class="cover">
     <img [src]="song.picUrl" [alt]="song.name">
     <div class="bottom">
       <div class="num">
         <i class="icon erji"></i>
         <span>{{song.playCount | countNumberFormatter}}</span>
       </div>
-      <i class="icon play"></i>
+      <i class="icon play" (click)="playSheet(song.id)"></i>
     </div>
   </a>
   <span class="dec">{{song.name}}</span>

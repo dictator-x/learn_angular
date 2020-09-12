@@ -1,7 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router'
 import { NzCarouselComponent } from 'ng-zorro-antd';
-import { map } from 'rxjs/internal/operators'
+import { map } from 'rxjs/internal/operators';
+
+import { SheetService } from 'src/app/service/sheet.service';
 
 import type {
   Banner,
@@ -27,7 +29,8 @@ export class HomeComponent implements OnInit {
   private nzCarousel: NzCarouselComponent;
 
   constructor(
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private sheetService: SheetService
   ){}
 
   ngOnInit(): void {
@@ -50,5 +53,10 @@ export class HomeComponent implements OnInit {
 
   public onChangeSlide(type: string): void {
     this.nzCarousel[type]();
+  }
+
+  public onPlay(id: number): void {
+    this.sheetService.getSongSheetDetail(id)
+      .subscribe((songSheet) => { console.log(songSheet) });
   }
 }
