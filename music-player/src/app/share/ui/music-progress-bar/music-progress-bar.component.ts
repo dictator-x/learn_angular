@@ -28,6 +28,7 @@ import { DOCUMENT } from '@angular/common';
 
 import { ProgressEventObserverConfig } from './progress-types'
 import { clearEventDefaultAndPropoagation } from './progress-bar-util'
+import { getElementOffset } from 'src/app/util/array'
 
 @Component({
   selector: 'app-music-progress-bar',
@@ -44,6 +45,8 @@ import { clearEventDefaultAndPropoagation } from './progress-bar-util'
 export class MusicProgressBarComponent implements OnInit {
 
   @Input() isVertical = false;
+  @Input() min: number = 0;
+  @Input() max: number = 100;
 
   private progressDom: HTMLDivElement;
   @ViewChild('progressBar', {static: true}) private progressBar;
@@ -59,6 +62,7 @@ export class MusicProgressBarComponent implements OnInit {
   ngOnInit(): void {
     // Hook gragging callback on DOM.
     this.createGraggingObservables();
+    this.subscribeDrag();
   }
 
   private createGraggingObservables(): void {
@@ -107,7 +111,50 @@ export class MusicProgressBarComponent implements OnInit {
     this.dragEnd$ = merge(mouse.end$, touch.end$);
   }
 
+  private subscribeDrag(events: string[] = ['start', 'move', 'end']): void {
+    if ( events.indexOf('start') !== -1 && this.dragStart$ ) {
+      this.dragStart$.subscribe(this.onDragStart.bind(this));
+    }
+    if ( events.indexOf('move') !== -1 && this.dragMove$ ) {
+      this.dragMove$.subscribe(this.onDragMove.bind(this));
+    }
+    if ( events.indexOf('end') !== -1 && this.dragEnd$ ) {
+      this.dragEnd$.subscribe(this.onDragEnd.bind(this));
+    }
+  }
+
+  private onDragStart(value: number) {
+    console.log(value)
+  }
+
+  private onDragMove(value: number) {
+    // console.log(value)
+  }
+
+  private onDragEnd(e: Event) {
+    // console.log(e)
+  }
+
   private findClosestValue(position: number): number {
-    return 1;
+    // length of progress bar.
+    const progressBarLength = this.getProgeessBarLength();
+
+    const progressStart = this.getProgressBarStartPostion();
+
+    const ratioTmp = (position - progressStart) / progressBarLength
+    const ratio = this.isVertical ? 1 - ratioTmp : ratioTmp;
+
+    return ratio * ( this.max - this.min ) + this.min;
+  }
+
+  private getProgeessBarLength(): number {
+    return this.isVertical ?
+      this.progressBar.nativeElement.clientHeight :
+      this.progressBar.nativeElement.clientWidth;
+  }
+
+  private getProgressBarStartPostion(): number {
+    const offset = getElementOffset(this.progressBar.nativeElement);
+    return this.isVertical ? offset.top : offset.left;
   }
 }
