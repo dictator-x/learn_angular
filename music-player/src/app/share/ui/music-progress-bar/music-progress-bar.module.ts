@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-
-
+import { MusicProgressBarComponent } from './music-progress-bar.component';
 
 @NgModule({
-  declarations: [],
+  declarations: [MusicProgressBarComponent],
   imports: [
-    CommonModule
+  ],
+  exports: [
+    MusicProgressBarComponent
   ]
 })
 export class MusicProgressBarModule { }

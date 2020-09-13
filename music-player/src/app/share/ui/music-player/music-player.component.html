@@ -16,16 +16,16 @@
         <i class="mask"></i>
       </div>
       <div class="play">
-        <div class="words clearfix" [hidden]="true">
-          <p class="ellipsis">song</p>
-          <ul class="songs clearfix">
+        <div class="words clearfix" hide>
+          <p class="ellipsis margin-bottom-none">song</p>
+          <ul class="songs clearfix margin-bottom-none">
             <li><a href="">singer</a></li>
             <li><a href="">singer</a></li>
           </ul>
         </div>
         <div class="bar">
           <div class="slider-wrap">
-            <div>loading</div>
+            <app-music-progress-bar></app-music-progress-bar>
           </div>
           <span class="time">
             <em>02:11</em> / 04:35
