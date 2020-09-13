@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common'
 import { MusicProgressBarComponent } from './music-progress-bar.component';
 import { MusicProgressTrackComponent } from './music-progress-track.component';
 import { MusicProgressHandleComponent } from './music-progress-handle.component';
@@ -10,6 +11,7 @@ import { MusicProgressHandleComponent } from './music-progress-handle.component'
     MusicProgressHandleComponent
   ],
   imports: [
+    CommonModule
   ],
   exports: [
     MusicProgressBarComponent
