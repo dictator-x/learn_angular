@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import type { Observable } from 'rxjs';
 import {
   map,
 } from 'rxjs/internal/operators';
@@ -26,14 +26,22 @@ export class SongService {
     .pipe(map((res: { data: SongUrl[] }) => res.data));
   }
 
+  // public getSongList(songs: Song | Song[]): Observable<Song[]> {
+  //   const songArr: Song[] = Array.isArray(songs) ? songs.slice() : [songs];
+  //   const ids = songArr.map(item => item.id).join(',');
+  //   return Observable.create(observer => {
+  //     this.getSongUrl(ids).subscribe(urls => {
+  //       observer.next(this.prepareSongList(songArr, urls));
+  //     });
+  //   });
+  // }
+
   public getSongList(songs: Song | Song[]): Observable<Song[]> {
     const songArr: Song[] = Array.isArray(songs) ? songs.slice() : [songs];
     const ids = songArr.map(item => item.id).join(',');
-    return Observable.create(observer => {
-      this.getSongUrl(ids).subscribe(urls => {
-        observer.next(this.prepareSongList(songArr, urls));
-      });
-    });
+    return this.getSongUrl(ids).pipe(map(urls => {
+      return this.prepareSongList(songArr, urls);
+    }));
   }
 
   private prepareSongList(songArr: Song[], urls: SongUrl[]): Song[] {
