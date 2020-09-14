@@ -10,6 +10,7 @@ import { AppRoutingModule } from '../app-routing.module';
 import { ServiceModule } from '../service/service.module';
 import { PageModule } from '../page/page.module';
 import { ShareModule } from '../share/share.module';
+import { AppStoreModule } from '../store'
 
 registerLocaleData(en);
 
@@ -22,6 +23,7 @@ registerLocaleData(en);
     ServiceModule,
     PageModule,
     ShareModule,
+    AppStoreModule,
     AppRoutingModule
   ],
   exports: [
