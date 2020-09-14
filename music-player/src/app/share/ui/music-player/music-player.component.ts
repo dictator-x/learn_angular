@@ -20,8 +20,8 @@ import { setCurrentIndex } from 'src/app/store/actions/player.actions';
 })
 export class MusicPlayerComponent implements OnInit, AfterViewInit {
 
-  public progressBarOffset: number = 35;
-  public bufferProgressBarOffset: number = 70;
+  public progressBarPercent: number = 0;
+  public bufferProgressBarPercent: number = 0;
 
   private songList: Song[];
   private playList: Song[];
@@ -89,12 +89,21 @@ export class MusicPlayerComponent implements OnInit, AfterViewInit {
     this.currentSong = song;
   }
 
+  public onPercentChange(per: number) {
+    this.audioEl.currentTime = this.duration * (per / 100);
+  }
+
   public onTimeUpdate(e: Event): void {
     this.currentPlayingTimeOffset = (<HTMLAudioElement>e.target).currentTime;
+    this.progressBarPercent = (this.currentPlayingTimeOffset / this.duration) * 100;
+    const buffered = this.audioEl.buffered;
+    //TODO: improvement with dragging buffer.
+    if ( buffered.length && this.bufferProgressBarPercent < 100 ) {
+      this.bufferProgressBarPercent = (buffered.end(0) / this.duration) * 100;
+    }
   }
 
   public onCanPlay(): void {
-    console.log("aa")
     this.songReady = true;
     this.play();
   }

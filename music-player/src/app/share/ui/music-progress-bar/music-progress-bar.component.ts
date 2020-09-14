@@ -9,7 +9,9 @@ import {
   Inject,
   ChangeDetectorRef,
   OnDestroy,
-  forwardRef
+  forwardRef,
+  Output,
+  EventEmitter
 } from '@angular/core';
 
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'
@@ -65,11 +67,14 @@ export class MusicProgressBarComponent implements OnInit, OnDestroy, ControlValu
   @Input() public max: number = 100;
   @Input() bufferProgressBarOffset: ProgressBarOffset = 0;
 
+  @Output() public onAfterChange = new EventEmitter<ProgressBarOffset>();
+
   @ViewChild('progressBar', {static: true}) private progressBar;
 
   private progressDom: HTMLDivElement;
   private isDragging = false;
   public progressBarOffset: ProgressBarOffset = 0;
+  private progressBarPercent: number = 0;
 
   private dragStart$: Observable<number>;
   private dragMove$: Observable<number>;
@@ -205,11 +210,13 @@ export class MusicProgressBarComponent implements OnInit, OnDestroy, ControlValu
   }
 
   private onDragEnd(e: Event) {
+    this.onAfterChange.emit(this.progressBarPercent);
     this.toggleDragMoving(false);
     this.cdr.markForCheck();
   }
 
   private updateTrackerAndHandler(value: ProgressBarOffset): void {
+    this.progressBarPercent = value;
     this.onProgressBarOffsetChange(value)
     this.progressBarOffset = this.getValueToOffset(value);
     this.cdr.markForCheck();

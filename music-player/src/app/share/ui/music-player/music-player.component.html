@@ -27,7 +27,11 @@
         </div>
         <div class="bar">
           <div class="slider-wrap">
-            <app-music-progress-bar [(ngModel)]="progressBarOffset" [bufferProgressBarOffset]="bufferProgressBarOffset"></app-music-progress-bar>
+            <app-music-progress-bar
+              [(ngModel)] = "progressBarPercent"
+              [bufferProgressBarOffset] = "bufferProgressBarPercent"
+              (onAfterChange) = "onPercentChange($event)"
+            ></app-music-progress-bar>
           </div>
           <span class="time">
             <em>{{this.currentPlayingTimeOffset | formatTime}}</em> / {{ duration | formatTime }}
