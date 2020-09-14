@@ -27,6 +27,7 @@ export class MusicPlayerComponent implements OnInit, AfterViewInit {
   private currentIndex: number;
   public currentSong: Song;
   private playMode: PlayMode;
+  public currentPlayingTimeOffset: number;
 
   @ViewChild('audio', { static: true }) private audio: ElementRef;
   private audioEl: HTMLAudioElement;
@@ -84,11 +85,23 @@ export class MusicPlayerComponent implements OnInit, AfterViewInit {
     this.currentSong = song;
   }
 
+  public onTimeUpdate(e: Event) {
+    this.currentPlayingTimeOffset = (<HTMLAudioElement>e.target).currentTime;
+  }
+
   public onCanPlay():void {
     this.play();
   }
 
   private play(): void {
     this.audioEl.play();
+  }
+
+  get picUrl(): string {
+    return this.currentSong ? this.currentSong.url : 'http://s4.music.126.net/style/web2/img/default/default_album.jpg';
+  }
+
+  get duration(): number {
+    return this.currentSong ? this.currentSong.dt / 1000 : null;
   }
 }
