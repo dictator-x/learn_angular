@@ -6,7 +6,8 @@ import {
   Input,
   ViewChild,
   ViewEncapsulation,
-  Inject
+  Inject,
+  ChangeDetectorRef
 } from '@angular/core';
 
 import {
@@ -26,16 +27,20 @@ import {
 
 import { DOCUMENT } from '@angular/common';
 
-import { ProgressEventObserverConfig } from './progress-types'
+import {
+  ProgressEventObserverConfig,
+  ProgressBarOffset
+} from './progress-types'
 import { clearEventDefaultAndPropoagation } from './progress-bar-util'
 import { getElementOffset } from 'src/app/util/array'
+import { boundNumberInRange, getPercent } from 'src/app/util/number'
 
 @Component({
   selector: 'app-music-progress-bar',
   template: `
     <div class="progress-bar" #progressBar>
-      <app-music-progress-track></app-music-progress-track>
-      <app-music-progress-handle></app-music-progress-handle>
+      <app-music-progress-track [isVertical]="isVertical" [length]="progressBarOffset"></app-music-progress-track>
+      <app-music-progress-handle [isVertical]="isVertical" [offset]="progressBarOffset"></app-music-progress-handle>
     </div>
   `,
   styleUrls: ['./music-progress-bar.component.less'],
@@ -48,21 +53,25 @@ export class MusicProgressBarComponent implements OnInit {
   @Input() min: number = 0;
   @Input() max: number = 100;
 
-  private progressDom: HTMLDivElement;
   @ViewChild('progressBar', {static: true}) private progressBar;
+
+  private progressDom: HTMLDivElement;
+  private isDragging = false;
+  public progressBarOffset: ProgressBarOffset = 0;
 
   private dragStart$: Observable<number>;
   private dragMove$: Observable<number>;
   private dragEnd$: Observable<Event>;
 
   constructor(
-    @Inject(DOCUMENT) private doc: Document
+    @Inject(DOCUMENT) private doc: Document,
+    private cdr: ChangeDetectorRef
   ){}
 
   ngOnInit(): void {
     // Hook gragging callback on DOM.
     this.createGraggingObservables();
-    this.subscribeDrag();
+    this.subscribeDrag(['start']);
   }
 
   private createGraggingObservables(): void {
@@ -123,27 +132,46 @@ export class MusicProgressBarComponent implements OnInit {
     }
   }
 
-  private onDragStart(value: number) {
-    console.log(value)
+  private onDragStart(value: number): void {
+    this.toggleDragMoving(true);
   }
 
   private onDragMove(value: number) {
-    // console.log(value)
+    if ( this.isDragging ) {
+      this.updateTrackerAndHandler(value)
+      this.cdr.markForCheck();
+    }
   }
 
   private onDragEnd(e: Event) {
-    // console.log(e)
+    this.toggleDragMoving(false);
+    this.cdr.markForCheck();
+  }
+
+  private updateTrackerAndHandler(value: ProgressBarOffset): void {
+    this.progressBarOffset = this.getValueToOffset(value);
+  }
+
+  private getValueToOffset(value: ProgressBarOffset): ProgressBarOffset {
+    return getPercent(value, this.min, this.max);
+  }
+
+  private toggleDragMoving(movable: boolean): void {
+    this.isDragging = movable;
+    if ( movable ) {
+      this.subscribeDrag(['move', 'end']);
+    } else {
+      // this.unSubscribeDrag(['move', 'end']);
+    }
   }
 
   private findClosestValue(position: number): number {
     // length of progress bar.
     const progressBarLength = this.getProgeessBarLength();
-
     const progressStart = this.getProgressBarStartPostion();
+    const ratioTmp = boundNumberInRange((position-progressStart)/progressBarLength, 0, 1);
 
-    const ratioTmp = (position - progressStart) / progressBarLength
     const ratio = this.isVertical ? 1 - ratioTmp : ratioTmp;
-
     return ratio * ( this.max - this.min ) + this.min;
   }
 
