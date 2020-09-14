@@ -134,12 +134,12 @@ export class MusicProgressBarComponent implements OnInit {
 
   private onDragStart(value: number): void {
     this.toggleDragMoving(true);
+    this.updateTrackerAndHandler(value);
   }
 
   private onDragMove(value: number) {
     if ( this.isDragging ) {
       this.updateTrackerAndHandler(value)
-      this.cdr.markForCheck();
     }
   }
 
@@ -150,6 +150,7 @@ export class MusicProgressBarComponent implements OnInit {
 
   private updateTrackerAndHandler(value: ProgressBarOffset): void {
     this.progressBarOffset = this.getValueToOffset(value);
+    this.cdr.markForCheck();
   }
 
   private getValueToOffset(value: ProgressBarOffset): ProgressBarOffset {
