@@ -7,4 +7,4 @@ export const setPlaying = createAction('[Player] Set playing', props<{ playing: 
 export const setPlayList = createAction('[Player] Set playList', props<{ playList: Song[] }>());
 export const setSongList = createAction('[Player] Set songList', props<{ songList: Song[] }>());
 export const setPlayMode = createAction('[Player] Set playMode', props<{ playMode: PlayMode }>());
-export const setCurrentIndex = createAction('[Player] Set currentIndex', props<{ index: number }>());
+export const setCurrentIndex = createAction('[Player] Set currentIndex', props<{ currentIndex: number }>());

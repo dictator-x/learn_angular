@@ -2,8 +2,11 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router'
 import { NzCarouselComponent } from 'ng-zorro-antd';
 import { map } from 'rxjs/internal/operators';
+import { Store } from '@ngrx/store';
 
+import { AppStoreModule } from 'src/app/store'
 import { SheetService } from 'src/app/service/sheet.service';
+import { setPlayList, setSongList, setCurrentIndex } from 'src/app/store/actions/player.actions';
 
 import type {
   Banner,
@@ -30,7 +33,8 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private sheetService: SheetService
+    private sheetService: SheetService,
+    private store: Store<AppStoreModule>
   ){}
 
   ngOnInit(): void {
@@ -57,6 +61,10 @@ export class HomeComponent implements OnInit {
 
   public onPlay(id: number): void {
     this.sheetService.playSheet(id)
-      .subscribe((songSheet) => { console.log(songSheet) });
+    .subscribe((list) => {
+      this.store.dispatch(setSongList({ songList: list }));
+      this.store.dispatch(setPlayList({ playList: list }));
+      this.store.dispatch(setCurrentIndex({ currentIndex: 0 }));
+    });
   }
 }
