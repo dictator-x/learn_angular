@@ -8,8 +8,11 @@ import {
   ViewEncapsulation,
   Inject,
   ChangeDetectorRef,
-  OnDestroy
+  OnDestroy,
+  forwardRef
 } from '@angular/core';
+
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'
 
 import {
   fromEvent,
@@ -35,7 +38,7 @@ import {
 } from './progress-types'
 import { clearEventDefaultAndPropoagation } from './progress-bar-util'
 import { getElementOffset } from 'src/app/util/array'
-import { boundNumberInRange, getPercent } from 'src/app/util/number'
+import { boundNumberInRange, getPercent, assertNumber } from 'src/app/util/number'
 
 @Component({
   selector: 'app-music-progress-bar',
@@ -47,9 +50,14 @@ import { boundNumberInRange, getPercent } from 'src/app/util/number'
   `,
   styleUrls: ['./music-progress-bar.component.less'],
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [{
+    provide: NG_VALUE_ACCESSOR,
+    useExisting: forwardRef(() => MusicProgressBarComponent),
+    multi: true
+  }]
 })
-export class MusicProgressBarComponent implements OnInit, OnDestroy {
+export class MusicProgressBarComponent implements OnInit, OnDestroy, ControlValueAccessor {
 
   @Input() isVertical = false;
   @Input() min: number = 0;
@@ -79,8 +87,35 @@ export class MusicProgressBarComponent implements OnInit, OnDestroy {
     this.subscribeDrag(['start']);
   }
 
+  private onProgressBarOffsetChange(value: ProgressBarOffset): void {};
+  private onTouched(): void {};
+
+  writeValue(value: ProgressBarOffset): void {
+    // Ensure value is legal.
+    if ( this.isDragging ) return;
+    this.updateTrackerAndHandler(this.ensureProgressBarOffset(value));
+  }
+
+  registerOnChange(fn: (value: ProgressBarOffset) => void): void {
+    this.onProgressBarOffsetChange = fn;
+  }
+
+  registerOnTouched(fn: () => void):void {
+    this.onTouched = fn;
+  }
+
   ngOnDestroy(): void {
     this.unSubscribeDrag();
+  }
+
+  private ensureProgressBarOffset(value: ProgressBarOffset): ProgressBarOffset {
+    let ret = value;
+    if ( ! assertNumber(value) ) {
+      ret = this.min;
+    } else {
+      ret = boundNumberInRange(value, this.min, this.max);
+    }
+    return ret;
   }
 
   private createGraggingObservables(): void {
@@ -173,6 +208,7 @@ export class MusicProgressBarComponent implements OnInit, OnDestroy {
   }
 
   private updateTrackerAndHandler(value: ProgressBarOffset): void {
+    this.onProgressBarOffsetChange(value)
     this.progressBarOffset = this.getValueToOffset(value);
     this.cdr.markForCheck();
   }

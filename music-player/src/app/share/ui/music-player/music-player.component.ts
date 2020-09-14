@@ -7,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MusicPlayerComponent implements OnInit {
 
+  public progressBarOffset: number = 35;
+
   constructor() { }
 
   ngOnInit(): void {
