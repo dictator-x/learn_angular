@@ -7,13 +7,15 @@ import {
   ViewChild,
   ViewEncapsulation,
   Inject,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  OnDestroy
 } from '@angular/core';
 
 import {
   fromEvent,
   merge,
-  Observable
+  Observable,
+  Subscription
 } from 'rxjs';
 
 import {
@@ -47,7 +49,7 @@ import { boundNumberInRange, getPercent } from 'src/app/util/number'
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MusicProgressBarComponent implements OnInit {
+export class MusicProgressBarComponent implements OnInit, OnDestroy {
 
   @Input() isVertical = false;
   @Input() min: number = 0;
@@ -62,6 +64,9 @@ export class MusicProgressBarComponent implements OnInit {
   private dragStart$: Observable<number>;
   private dragMove$: Observable<number>;
   private dragEnd$: Observable<Event>;
+  private dragStart_: Subscription | null = null;
+  private dragMove_: Subscription | null = null;
+  private dragEnd_: Subscription | null = null;
 
   constructor(
     @Inject(DOCUMENT) private doc: Document,
@@ -72,6 +77,10 @@ export class MusicProgressBarComponent implements OnInit {
     // Hook gragging callback on DOM.
     this.createGraggingObservables();
     this.subscribeDrag(['start']);
+  }
+
+  ngOnDestroy(): void {
+    this.unSubscribeDrag();
   }
 
   private createGraggingObservables(): void {
@@ -121,14 +130,29 @@ export class MusicProgressBarComponent implements OnInit {
   }
 
   private subscribeDrag(events: string[] = ['start', 'move', 'end']): void {
-    if ( events.indexOf('start') !== -1 && this.dragStart$ ) {
-      this.dragStart$.subscribe(this.onDragStart.bind(this));
+    if ( events.indexOf('start') !== -1 && this.dragStart$ && ! this.dragStart_ ) {
+       this.dragStart_ = this.dragStart$.subscribe(this.onDragStart.bind(this));
     }
-    if ( events.indexOf('move') !== -1 && this.dragMove$ ) {
-      this.dragMove$.subscribe(this.onDragMove.bind(this));
+    if ( events.indexOf('move') !== -1 && this.dragMove$ && ! this.dragMove_ ) {
+      this.dragMove_ = this.dragMove$.subscribe(this.onDragMove.bind(this));
     }
-    if ( events.indexOf('end') !== -1 && this.dragEnd$ ) {
-      this.dragEnd$.subscribe(this.onDragEnd.bind(this));
+    if ( events.indexOf('end') !== -1 && this.dragEnd$ && ! this.dragEnd_ ) {
+      this.dragEnd_ = this.dragEnd$.subscribe(this.onDragEnd.bind(this));
+    }
+  }
+
+  private unSubscribeDrag(events: string[] = ['start', 'move', 'end']): void {
+    if ( events.indexOf('start') !== -1 && this.dragStart_ ) {
+      this.dragStart_.unsubscribe();
+      this.dragStart_ = null;
+    }
+    if ( events.indexOf('move') !== -1 && this.dragMove_ ) {
+      this.dragMove_.unsubscribe();
+      this.dragMove_ = null;
+    }
+    if ( events.indexOf('end') !== -1 && this.dragEnd_ ) {
+      this.dragEnd_.unsubscribe();
+      this.dragEnd_ = null;
     }
   }
 
@@ -162,9 +186,10 @@ export class MusicProgressBarComponent implements OnInit {
     if ( movable ) {
       this.subscribeDrag(['move', 'end']);
     } else {
-      // this.unSubscribeDrag(['move', 'end']);
+      this.unSubscribeDrag(['move', 'end']);
     }
   }
+
 
   private findClosestValue(position: number): number {
     // length of progress bar.
