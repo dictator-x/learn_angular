@@ -43,7 +43,8 @@ import { boundNumberInRange, getPercent, assertNumber } from 'src/app/util/numbe
 @Component({
   selector: 'app-music-progress-bar',
   template: `
-    <div class="progress-bar" #progressBar>
+    <div class="progress-bar" #progressBar [class.progress-bar-vertical]="isVertical">
+      <app-music-progress-track [isVertical]="isVertical" [length]="bufferProgressBarOffset" [buffer]="true"></app-music-progress-track>
       <app-music-progress-track [isVertical]="isVertical" [length]="progressBarOffset"></app-music-progress-track>
       <app-music-progress-handle [isVertical]="isVertical" [offset]="progressBarOffset"></app-music-progress-handle>
     </div>
@@ -59,9 +60,10 @@ import { boundNumberInRange, getPercent, assertNumber } from 'src/app/util/numbe
 })
 export class MusicProgressBarComponent implements OnInit, OnDestroy, ControlValueAccessor {
 
-  @Input() isVertical = false;
-  @Input() min: number = 0;
-  @Input() max: number = 100;
+  @Input() public isVertical = false;
+  @Input() public min: number = 0;
+  @Input() public max: number = 100;
+  @Input() bufferProgressBarOffset: ProgressBarOffset = 0;
 
   @ViewChild('progressBar', {static: true}) private progressBar;
 

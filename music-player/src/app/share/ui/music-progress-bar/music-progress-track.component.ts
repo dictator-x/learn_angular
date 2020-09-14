@@ -11,13 +11,14 @@ import type { ProgressBarStyle } from './progress-types'
 
 @Component({
   selector: 'app-music-progress-track',
-  template: `<div class="progress-track" [ngStyle]="style"></div>`,
+  template: `<div class="progress-track" [ngStyle]="style" [class.buffer]="buffer"></div>`,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MusicProgressTrackComponent implements OnInit, OnChanges {
 
   @Input() public isVertical: boolean = false;
-  @Input() public length: number;
+  @Input() public length: number = 0;
+  @Input() public buffer: boolean = false;
 
   public style: ProgressBarStyle = {}
   constructor() {}

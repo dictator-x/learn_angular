@@ -25,7 +25,7 @@
         </div>
         <div class="bar">
           <div class="slider-wrap">
-            <app-music-progress-bar [(ngModel)]="progressBarOffset"></app-music-progress-bar>
+            <app-music-progress-bar [(ngModel)]="progressBarOffset" [bufferProgressBarOffset]="bufferProgressBarOffset"></app-music-progress-bar>
           </div>
           <span class="time">
             <em>02:11</em> / 04:35
@@ -43,6 +43,9 @@
         <p class="open">
           <span></span>
         </p>
+        <div class="control-vol">
+          <app-music-progress-bar [isVertical]="true"></app-music-progress-bar>
+        </div>
       </div>
     </div>
   </div>
