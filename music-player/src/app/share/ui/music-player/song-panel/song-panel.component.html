@@ -17,7 +17,11 @@
   <div class="bd">
     <img class="imgbg" src="//music.163.com/api/img/blur/109951163826278397">
     <div class="msk"></div>
-    <app-scroll class="list-wrap" [data]="songList">
+    <app-scroll
+      class = "list-wrap"
+      [data] = "songList"
+      (onScrollEnd) = "onScrollEnd($event)"
+    >
       <ul>
         <li
           *ngFor = "let song of songList; index as i"

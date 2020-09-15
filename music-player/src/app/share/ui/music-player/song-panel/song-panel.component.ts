@@ -3,9 +3,7 @@ import {
   OnInit,
   Input,
   OnChanges,
-  SimpleChanges,
-  Output,
-  EventEmitter,
+  SimpleChanges, Output, EventEmitter,
   ViewChildren,
   QueryList
 } from '@angular/core';
@@ -30,12 +28,21 @@ export class SongPanelComponent implements OnInit, OnChanges {
 
   @ViewChildren(ScrollComponent) private scroll: QueryList<ScrollComponent>;
 
-  constructor() { }
+  public scrollY: number = 0;
+
+  constructor(){}
 
   ngOnInit(): void {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if ( changes['currentSong'] ) {
+      if ( this.currentSong ) {
+        if ( this.show ) {
+          this.scrollToCurrent();
+        }
+      }
+    }
     if ( changes['show'] ) {
       if ( ! changes['show'].firstChange && this.show ) {
         this.scroll.first.refreshScroll();
@@ -43,4 +50,26 @@ export class SongPanelComponent implements OnInit, OnChanges {
     }
   }
 
+  public onScrollEnd(scrollEnd :number) {
+    this.scrollY = scrollEnd;
+  }
+
+  private scrollToCurrent(): void {
+    const songListRefs = this.scroll.first.el.nativeElement.querySelectorAll('ul li');
+    if ( songListRefs.length ) {
+      const currentLi = <HTMLElement>songListRefs[this.currentIndex || 0];
+      const offsetTop = currentLi.offsetTop;
+      const offsetHeight = currentLi.offsetHeight;
+
+      if ( offsetTop - Math.abs(this.scrollY) > offsetHeight * 5) {
+        this.scroll.first.scrollToElement(currentLi, 300, false, false);
+      }
+
+      if ( offsetTop < Math.abs(this.scrollY) ) {
+        this.scroll.first.scrollToElement(currentLi, 300, false, false);
+
+      }
+
+    }
+  }
 }

@@ -50,7 +50,7 @@ export class MusicPlayerComponent implements OnInit, AfterViewInit {
   private songReady: boolean = false;
   public playing: boolean = false;
 
-  public volume: number = 60;
+  public volume: number = 30;
   public showVolumePanel: boolean = false;
   public showSongListPanel: boolean = false;
 

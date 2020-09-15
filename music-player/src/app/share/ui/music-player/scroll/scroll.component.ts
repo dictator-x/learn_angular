@@ -4,11 +4,13 @@ import {
   ViewEncapsulation,
   ChangeDetectionStrategy,
   AfterViewInit,
-  ElementRef,
   ViewChild,
   Input,
   OnChanges,
-  SimpleChanges
+  SimpleChanges,
+  ElementRef,
+  Output,
+  EventEmitter
 } from '@angular/core';
 
 import BScroll from '@better-scroll/core';
@@ -40,11 +42,12 @@ export class ScrollComponent implements OnInit, AfterViewInit, OnChanges {
 
   @Input() data: any[];
   @Input() refreshDelay: number = 50;
+  @Output() private onScrollEnd = new EventEmitter<number>();
   @ViewChild('wrap', { static: true }) private wrapRef: ElementRef;
 
   private bs: BScroll;
 
-  constructor() { }
+  constructor(readonly el: ElementRef) { }
 
   ngOnInit(): void {}
 
@@ -62,6 +65,7 @@ export class ScrollComponent implements OnInit, AfterViewInit, OnChanges {
         easeTime: 300
       }
     });
+    this.bs.on('scrollEnd', ({ y }) => this.onScrollEnd.emit(y));
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -78,5 +82,9 @@ export class ScrollComponent implements OnInit, AfterViewInit, OnChanges {
     setTimeout(() => {
       this.refresh()
     }, this.refreshDelay);
+  }
+
+  public scrollToElement(...args) {
+    this.bs.scrollToElement.apply(this.bs, args);
   }
 }
