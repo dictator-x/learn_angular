@@ -5,10 +5,13 @@ import {
   OnChanges,
   SimpleChanges,
   Output,
-  EventEmitter
+  EventEmitter,
+  ViewChildren,
+  QueryList
 } from '@angular/core';
 
 import { Song } from 'src/app/data-types/common.types'
+import { ScrollComponent } from '../scroll/scroll.component'
 
 @Component({
   selector: 'app-song-panel',
@@ -25,12 +28,19 @@ export class SongPanelComponent implements OnInit, OnChanges {
   @Output() onClose = new EventEmitter<void>();
   @Output() onSongChange = new EventEmitter<Song>();
 
+  @ViewChildren(ScrollComponent) private scroll: QueryList<ScrollComponent>;
+
   constructor() { }
 
   ngOnInit(): void {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if ( changes['show'] ) {
+      if ( ! changes['show'].firstChange && this.show ) {
+        this.scroll.first.refreshScroll();
+      }
+    }
   }
 
 }

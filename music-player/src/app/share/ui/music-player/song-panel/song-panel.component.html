@@ -17,7 +17,7 @@
   <div class="bd">
     <img class="imgbg" src="//music.163.com/api/img/blur/109951163826278397">
     <div class="msk"></div>
-    <div class="list-wrap">
+    <app-scroll class="list-wrap" [data]="songList">
       <ul>
         <li
           *ngFor = "let song of songList; index as i"
@@ -41,7 +41,7 @@
           <div class="col link"></div>
         </li>
       </ul>
-    </div>
+    </app-scroll>
     <ul>
       lyric
     </ul>

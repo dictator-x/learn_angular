@@ -20,6 +20,8 @@
     "@angular/platform-browser-dynamic": "~10.1.0",
     "@angular/router": "~10.1.0",
     "@better-scroll/core": "^2.0.3",
+    "@better-scroll/mouse-wheel": "^2.0.3",
+    "@better-scroll/scroll-bar": "^2.0.3",
     "@ngrx/store": "^10.0.0",
     "@ngrx/store-devtools": "^10.0.0",
     "minireset.css": "0.0.6",
