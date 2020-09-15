@@ -41,9 +41,9 @@ export class MusicPlayerComponent implements OnInit, AfterViewInit {
   public progressBarPercent: number = 0;
   public bufferProgressBarPercent: number = 0;
 
-  private songList: Song[];
+  public songList: Song[];
   private playList: Song[];
-  private currentIndex: number;
+  public currentIndex: number;
   public currentSong: Song;
   public currentPlayingTimeOffset: number;
 
@@ -52,6 +52,7 @@ export class MusicPlayerComponent implements OnInit, AfterViewInit {
 
   public volume: number = 60;
   public showVolumePanel: boolean = false;
+  public showSongListPanel: boolean = false;
 
   public selfClick: boolean = false;
   private winClick: Subscription;
@@ -161,12 +162,18 @@ export class MusicPlayerComponent implements OnInit, AfterViewInit {
   }
 
   public toggleVolumePanel(e: MouseEvent): void {
-    this.togglePanel();
+    this.togglePanel('showVolumePanel');
   }
 
-  private togglePanel(): void {
-    this.showVolumePanel = ! this.showVolumePanel;
-    if ( this.showVolumePanel ) {
+  public toggleSongListPanel(e: MouseEvent): void {
+    if ( this.songList.length ) {
+      this.togglePanel('showSongListPanel');
+    }
+  }
+
+  private togglePanel(type: string): void {
+    this[type] = ! this[type];
+    if ( this.showVolumePanel || this.showSongListPanel ) {
       this.bindDocumentClickListener();
     } else {
       this.unBindDocumentClickListener();
@@ -176,9 +183,9 @@ export class MusicPlayerComponent implements OnInit, AfterViewInit {
   private bindDocumentClickListener(): void {
     if ( ! this.winClick ) {
       this.winClick = fromEvent(this.doc, 'click').subscribe(() => {
-        console.log(this.selfClick);
         if ( ! this.selfClick ) {
           this.showVolumePanel = false;
+          this.showSongListPanel = false;
           this.unBindDocumentClickListener();
         }
         this.selfClick = false;
@@ -191,6 +198,10 @@ export class MusicPlayerComponent implements OnInit, AfterViewInit {
       this.winClick.unsubscribe();
       this.winClick = null;
     }
+  }
+
+  public onSongChange(song: Song): void {
+    this.updateCurrentIndex(this.songList, song);
   }
 
   public onVolumeChange(volumePer: number): void {

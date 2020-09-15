@@ -4,12 +4,14 @@ import { MusicPlayerComponent } from './music-player.component';
 import { CommonModule } from '@angular/common';
 
 import { MusicProgressBarModule } from '../music-progress-bar/music-progress-bar.module'
-import { FormatTimePipe } from '../../pipe/format-time.pipe'
+import { FormatTimePipe } from '../../pipe/format-time.pipe';
+import { SongPanelComponent } from './song-panel/song-panel.component'
 
 @NgModule({
   declarations: [
     MusicPlayerComponent,
-    FormatTimePipe
+    FormatTimePipe,
+    SongPanelComponent
   ],
   imports: [
     MusicProgressBarModule,

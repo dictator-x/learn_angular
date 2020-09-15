@@ -48,7 +48,7 @@
       <div class="ctrl">
         <i class="volume" title="volume" (click)="toggleVolumePanel($event)"></i>
         <i [ngClass]="currentMode.type" [title]="currentMode.label" (click)="changeMode()"></i>
-        <p class="open">
+        <p class="open" (click)="toggleSongListPanel($event)">
           <span></span>
         </p>
         <div class="control-vol" [hidden]="!showVolumePanel">
@@ -59,6 +59,15 @@
           ></app-music-progress-bar>
         </div>
       </div>
+
+      <app-song-panel
+        [songList] = "songList"
+        [currentSong] = "currentSong"
+        [currentIndex] = "currentIndex"
+        [show] = "showSongListPanel"
+        (onClose) = "showSongListPanel = false"
+        (onSongChange) = "onSongChange($event)"
+      ></app-song-panel>
     </div>
   </div>
 
