@@ -1,5 +1,7 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, Inject } from '@angular/core';
+import { Subscription, fromEvent } from 'rxjs';
 import { Store, select } from '@ngrx/store';
+import { DOCUMENT } from '@angular/common';
 
 import { AppStoreModule } from 'src/app/store';
 import {
@@ -11,7 +13,23 @@ import {
 } from 'src/app/store/selectors/player.selector';
 import { Song } from 'src/app/data-types/common.types';
 import { PlayMode } from './player.types';
-import { setCurrentIndex } from 'src/app/store/actions/player.actions';
+import { setCurrentIndex, setPlayMode, setPlayList } from 'src/app/store/actions/player.actions';
+import { shuffle } from 'src/app/util/array';
+
+const modeTypes: PlayMode[] = [
+  {
+    type: 'loop',
+    label: 'loop'
+  },
+  {
+    type: 'random',
+    label: 'random'
+  },
+  {
+    type: 'singleLoop',
+    label: 'single'
+  },
+]
 
 @Component({
   selector: 'app-music-player',
@@ -27,17 +45,26 @@ export class MusicPlayerComponent implements OnInit, AfterViewInit {
   private playList: Song[];
   private currentIndex: number;
   public currentSong: Song;
-  private playMode: PlayMode;
   public currentPlayingTimeOffset: number;
 
   private songReady: boolean = false;
   public playing: boolean = false;
 
+  public volume: number = 60;
+  public showVolumePanel: boolean = false;
+
+  public selfClick: boolean = false;
+  private winClick: Subscription;
+
+  public currentMode: PlayMode;
+  public modeCount: number = 0;
+
   @ViewChild('audio', { static: true }) private audio: ElementRef;
   private audioEl: HTMLAudioElement;
 
   constructor(
-    private store: Store<AppStoreModule>
+    private store: Store<AppStoreModule>,
+    @Inject(DOCUMENT) private doc: Document
   ){}
 
   ngOnInit(): void {
@@ -82,11 +109,41 @@ export class MusicPlayerComponent implements OnInit, AfterViewInit {
   }
 
   private watchPlayMode(mode: PlayMode): void {
-    this.playMode = mode;
+    this.currentMode = mode;
+    if ( this.songList && this.songList.length != 0 ) {
+      let list = this.songList.slice();
+      if ( mode.type === 'random' ) {
+        list = shuffle<Song>(this.songList);
+        this.updateCurrentIndex(list, this.currentSong);
+        this.store.dispatch(setPlayList({ playList: list }));
+      } else if ( mode.type === 'loop' ) {
+        this.updateCurrentIndex(list, this.currentSong);
+        this.store.dispatch(setPlayList({ playList: list }));
+      }
+    }
+  }
+
+  private updateCurrentIndex(list: Song[], currentSong: Song): void {
+    const newIndex = list.findIndex(item => item.id === currentSong.id);
+    this.store.dispatch(setCurrentIndex({ currentIndex: newIndex }));
   }
 
   private watchCurrentSong(song: Song): void {
     this.currentSong = song;
+  }
+
+  public onEnded(): void {
+    this.playing = false;
+    if ( this.currentMode.type === 'singleLoop' ) {
+      this.loop();
+    } else {
+      this.onNext();
+    }
+  }
+
+  public changeMode(): void {
+    const temp = modeTypes[++this.modeCount % 3]
+    this.store.dispatch(setPlayMode({ playMode: temp }));
   }
 
   public onPercentChange(per: number) {
@@ -101,6 +158,43 @@ export class MusicPlayerComponent implements OnInit, AfterViewInit {
     if ( buffered.length && this.bufferProgressBarPercent < 100 ) {
       this.bufferProgressBarPercent = (buffered.end(0) / this.duration) * 100;
     }
+  }
+
+  public toggleVolumePanel(e: MouseEvent): void {
+    this.togglePanel();
+  }
+
+  private togglePanel(): void {
+    this.showVolumePanel = ! this.showVolumePanel;
+    if ( this.showVolumePanel ) {
+      this.bindDocumentClickListener();
+    } else {
+      this.unBindDocumentClickListener();
+    }
+  }
+
+  private bindDocumentClickListener(): void {
+    if ( ! this.winClick ) {
+      this.winClick = fromEvent(this.doc, 'click').subscribe(() => {
+        console.log(this.selfClick);
+        if ( ! this.selfClick ) {
+          this.showVolumePanel = false;
+          this.unBindDocumentClickListener();
+        }
+        this.selfClick = false;
+      });
+    }
+  }
+
+  private unBindDocumentClickListener() {
+    if ( this.winClick ) {
+      this.winClick.unsubscribe();
+      this.winClick = null;
+    }
+  }
+
+  public onVolumeChange(volumePer: number): void {
+    this.audioEl.volume = volumePer / 100;
   }
 
   public onCanPlay(): void {

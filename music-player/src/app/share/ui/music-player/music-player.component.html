@@ -1,4 +1,6 @@
-<div class="m-player">
+<div class="m-player"
+    (click) = "selfClick = true"
+>
   <div class="lock">
     <div class="left"><i></i></div>
   </div>
@@ -44,13 +46,17 @@
         <i class="share" title="share"></i>
       </div>
       <div class="ctrl">
-        <i class="volume" title="volume"></i>
-        <i class="loop" title="mode"></i>
+        <i class="volume" title="volume" (click)="toggleVolumePanel($event)"></i>
+        <i [ngClass]="currentMode.type" [title]="currentMode.label" (click)="changeMode()"></i>
         <p class="open">
           <span></span>
         </p>
-        <div class="control-vol">
-          <app-music-progress-bar [isVertical]="true"></app-music-progress-bar>
+        <div class="control-vol" [hidden]="!showVolumePanel">
+          <app-music-progress-bar
+            [isVertical] = "true"
+            [(ngModel)] = "volume"
+            (ngModelChange) = "onVolumeChange($event)"
+          ></app-music-progress-bar>
         </div>
       </div>
     </div>
@@ -61,5 +67,6 @@
     [src] = "currentSong?.url"
     (canplay) = "onCanPlay()"
     (timeupdate) = "onTimeUpdate($event)"
+    (ended) = "onEnded()"
   ></audio>
 </div>

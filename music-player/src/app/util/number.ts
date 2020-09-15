@@ -9,3 +9,7 @@ export function getPercent(val: number, min: number, max: number): number {
 export function assertNumber(value: number): boolean {
   return ! isNaN(typeof value !== 'number' ? parseFloat(value) : value);
 }
+
+export function getRandomInt(range: [number, number]): number {
+  return Math.floor(Math.random() * (range[1] - range[0] + 1));
+}
