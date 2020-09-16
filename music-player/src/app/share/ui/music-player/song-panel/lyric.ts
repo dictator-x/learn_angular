@@ -1,3 +1,5 @@
+import { Subject } from 'rxjs';
+
 import { Lyric } from 'src/app/data-types/common.types'
 
 const timeExp = /\[(\d{2}):(\d{2})\.(\d{2,3})\]/;
@@ -13,9 +15,21 @@ interface LyricLine extends BaseLyricLine {
   timeLiteral: string;
 }
 
+interface Handler extends BaseLyricLine {
+  lineNum: number;
+}
+
 export class LyricProcessor {
   public lrc: Lyric;
   public formattedLines: LyricLine[];
+
+  private playing: boolean = false;
+  private curNum: number;
+  private startStamp: number;
+  private pauseStamp: number;
+  private timer: any;
+
+  public handler = new Subject<Handler>();
 
   constructor(lrc: Lyric) {
     this.lrc = lrc;
@@ -77,5 +91,64 @@ export class LyricProcessor {
       }
     }
     return null;
+  }
+
+  //TODO: rework on this.
+  public play(startTime=0) {
+    if ( ! this.formattedLines.length ) return;
+    if ( ! this.playing ) {
+      this.playing = true;
+    }
+
+    this.curNum = this.findCurNum(startTime);
+    console.log(this.curNum);
+    this.startStamp = Date.now() - startTime;
+    if ( this.curNum < this.formattedLines.length ) {
+      clearTimeout(this.timer);
+      this.playReset();
+    }
+  }
+
+  private playReset() {
+    let line = this.formattedLines[this.curNum];
+    const delay = line.time - (Date.now() - this.startStamp);
+    this.timer = setTimeout(() => {
+      this.callHandler(this.curNum++);
+      if ( this.curNum < this.formattedLines.length && this.playing) {
+        this.playReset();
+      }
+    }, delay);
+  }
+
+  private callHandler(i: number):void {
+    this.handler.next({
+      originalTxt: this.formattedLines[i].originalTxt,
+      bilingualTxt: this.formattedLines[i].bilingualTxt,
+      lineNum: i
+    });
+  }
+
+  private findCurNum(time: number): number {
+    const index = this.formattedLines.findIndex(line => time <= line.time);
+    return index === -1 ? this.formattedLines.length - 1 : index;
+  }
+
+  public togglePlay(playing: boolean): void {
+    const now = Date.now();
+    this.playing = playing;
+    if ( playing ) {
+      const startTime = (this.pauseStamp || now) - (this.startStamp || now);
+      this.play(startTime);
+    } else {
+      this.stop();
+      this.pauseStamp = now;
+    }
+  }
+
+  private stop():void {
+    if ( this.playing ) {
+      this.playing = false;
+    }
+    clearTimeout(this.timer);
   }
 }

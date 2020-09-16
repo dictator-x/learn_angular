@@ -29,10 +29,16 @@ export class SongPanelComponent implements OnInit, OnChanges {
   @Input() songList: Song[];
   @Input() currentSong: Song;
   @Input() show: boolean = false;
+  @Input() playing: boolean;
+
   public currentLyric: BaseLyricLine[];
+  public currentLineNum: number;
 
   @Output() onClose = new EventEmitter<void>();
   @Output() onSongChange = new EventEmitter<Song>();
+
+  private lyric: LyricProcessor;
+  private lyricRefs: NodeList;
 
   @ViewChildren(ScrollComponent) private scroll: QueryList<ScrollComponent>;
 
@@ -71,6 +77,11 @@ export class SongPanelComponent implements OnInit, OnChanges {
         }, 80)
       }
     }
+    if ( changes['playing'] ) {
+      if ( ! changes['playing'].firstChange ) {
+        this.lyric && this.lyric.togglePlay(this.playing);
+      }
+    }
   }
 
   private updateLyric(): void {
@@ -79,10 +90,33 @@ export class SongPanelComponent implements OnInit, OnChanges {
         this.currentLyric = [];
         return;
       }
-      const lyricProcessor = new LyricProcessor(res);
-      this.currentLyric = lyricProcessor.formattedLines;
+      this.lyric = new LyricProcessor(res);
+      this.currentLyric = this.lyric.formattedLines;
       this.scroll.last.refreshScroll();
+
+      this.lyricRefs = null;
+      this.handlelyric();
+      this.scroll.last.scrollTo(0, 0);
+
+      if ( this.playing ) {
+        this.lyric.play();
+      }
     });
+  }
+
+  private handlelyric(): void {
+    this.lyric.handler.subscribe(({ lineNum }) => {
+      if ( ! this.lyricRefs ) {
+        this.lyricRefs = this.scroll.last.el.nativeElement.querySelectorAll('ul, li');
+      }
+      if ( this.lyricRefs.length ) {
+        this.currentLineNum = lineNum;
+        const targetLine = this.lyricRefs[lineNum];
+        if ( targetLine ) {
+          this.scroll.last.scrollToElement(targetLine, 300, false, false);
+        }
+      }
+    })
   }
 
   public onScrollEnd(scrollEnd :number) {

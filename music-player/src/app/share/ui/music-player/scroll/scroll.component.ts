@@ -88,4 +88,8 @@ export class ScrollComponent implements OnInit, AfterViewInit, OnChanges {
   public scrollToElement(...args) {
     this.bs.scrollToElement.apply(this.bs, args);
   }
+
+  public scrollTo(...args) {
+    this.bs.scrollTo.apply(this.bs, args);
+  }
 }
