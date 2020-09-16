@@ -41,7 +41,7 @@ export class SongPanelComponent implements OnInit, OnChanges {
   constructor(@Inject(WINDOW) private win: Window){}
 
   ngOnInit(): void {
-    console.log(this.win);
+    // console.log(this.win);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
