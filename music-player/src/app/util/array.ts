@@ -1,5 +1,7 @@
 import { getRandomInt } from './number';
 
+import { Song } from 'src/app/data-types/common.types'
+
 export function getElementOffset(el: HTMLElement): { top: number, left: number } {
   if ( ! el.getClientRects().length ) {
     return { top: 0, left: 0 }
@@ -20,4 +22,8 @@ export function shuffle<T>(arr: T[]): T[] {
     [result[i], result[j]] = [result[j], result[i]];
   }
   return result;
+}
+
+export function findIndex(list: Song[], currentSong: Song): number {
+  return list.findIndex(item => item.id === currentSong.id);
 }

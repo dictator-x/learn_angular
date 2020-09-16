@@ -5,11 +5,16 @@ import {
   OnChanges,
   SimpleChanges, Output, EventEmitter,
   ViewChildren,
-  QueryList
+  QueryList,
+  Inject
 } from '@angular/core';
 
-import { Song } from 'src/app/data-types/common.types'
-import { ScrollComponent } from '../scroll/scroll.component'
+import { timer } from 'rxjs';
+
+import { Song } from 'src/app/data-types/common.types';
+import { ScrollComponent } from '../scroll/scroll.component';
+import { findIndex } from 'src/app/util/array';
+import { WINDOW } from 'src/app/service/service.module';
 
 @Component({
   selector: 'app-song-panel',
@@ -20,7 +25,6 @@ export class SongPanelComponent implements OnInit, OnChanges {
 
   @Input() songList: Song[];
   @Input() currentSong: Song;
-  @Input() currentIndex: number;
   @Input() show: boolean = false;
 
   @Output() onClose = new EventEmitter<void>();
@@ -28,11 +32,16 @@ export class SongPanelComponent implements OnInit, OnChanges {
 
   @ViewChildren(ScrollComponent) private scroll: QueryList<ScrollComponent>;
 
+  get currentIndex(): number {
+    return findIndex(this.songList, this.currentSong);
+  }
+
   public scrollY: number = 0;
 
-  constructor(){}
+  constructor(@Inject(WINDOW) private win: Window){}
 
   ngOnInit(): void {
+    console.log(this.win);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -46,6 +55,16 @@ export class SongPanelComponent implements OnInit, OnChanges {
     if ( changes['show'] ) {
       if ( ! changes['show'].firstChange && this.show ) {
         this.scroll.first.refreshScroll();
+        // timer(80).subscribe(() => {
+        //   if ( this.currentSong ) {
+        //     this.scrollToCurrent();
+        //   }
+        // });
+        this.win.setTimeout(() => {
+          if ( this.currentSong ) {
+            this.scrollToCurrent();
+          }
+        }, 80)
       }
     }
   }

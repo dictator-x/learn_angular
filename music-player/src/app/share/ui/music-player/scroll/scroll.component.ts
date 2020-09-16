@@ -12,6 +12,7 @@ import {
   Output,
   EventEmitter
 } from '@angular/core';
+import { timer } from 'rxjs';
 
 import BScroll from '@better-scroll/core';
 import ScrollBar from '@better-scroll/scroll-bar';
@@ -79,9 +80,9 @@ export class ScrollComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   public refreshScroll(): void {
-    setTimeout(() => {
+    timer(this.refreshDelay).subscribe(() => {
       this.refresh()
-    }, this.refreshDelay);
+    });
   }
 
   public scrollToElement(...args) {
