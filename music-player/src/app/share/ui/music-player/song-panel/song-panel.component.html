@@ -46,8 +46,13 @@
         </li>
       </ul>
     </app-scroll>
-    <ul>
-      lyric
-    </ul>
+
+    <app-scroll class="list-lyric">
+      <ul>
+        <li *ngFor="let line of currentLyric">
+          {{line.originalTxt}}: <br/> {{line.bilingualTxt}}
+        </li>
+      </ul>
+    </app-scroll>
   </div>
 </div>

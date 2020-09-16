@@ -8,7 +8,8 @@ import { HttpClient } from '@angular/common/http';
 import { ServiceModule, API_CONFIG } from './service.module';
 import type {
   SongUrl,
-  Song
+  Song,
+  Lyric
 } from '../data-types/common.types';
 
 @Injectable({
@@ -52,5 +53,16 @@ export class SongService {
       }
       return acc;
     }, []);
+  }
+
+  public getLyric(id: number): Observable<Lyric> {
+    return this.http.get(`${this.host}/lyric`, { params:{id: id.toString()} })
+    .pipe(map((res: { [key: string]: { lyric: string; } }) => {
+      if ( res.nolyric ) return null;
+      return {
+        lyric: res.lrc.lyric,
+        tlyric: res.tlyric.lyric
+      }
+    }));
   }
 }

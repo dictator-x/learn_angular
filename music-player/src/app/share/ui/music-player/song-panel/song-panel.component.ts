@@ -15,6 +15,9 @@ import { Song } from 'src/app/data-types/common.types';
 import { ScrollComponent } from '../scroll/scroll.component';
 import { findIndex } from 'src/app/util/array';
 import { WINDOW } from 'src/app/service/service.module';
+import { SongService } from 'src/app/service/song.service';
+import { LyricProcessor } from '../song-panel/lyric';
+import { BaseLyricLine } from './lyric'
 
 @Component({
   selector: 'app-song-panel',
@@ -26,6 +29,7 @@ export class SongPanelComponent implements OnInit, OnChanges {
   @Input() songList: Song[];
   @Input() currentSong: Song;
   @Input() show: boolean = false;
+  public currentLyric: BaseLyricLine[];
 
   @Output() onClose = new EventEmitter<void>();
   @Output() onSongChange = new EventEmitter<Song>();
@@ -38,7 +42,10 @@ export class SongPanelComponent implements OnInit, OnChanges {
 
   public scrollY: number = 0;
 
-  constructor(@Inject(WINDOW) private win: Window){}
+  constructor(
+    @Inject(WINDOW) private win: Window,
+    private songService: SongService
+  ){}
 
   ngOnInit(): void {
     // console.log(this.win);
@@ -47,6 +54,7 @@ export class SongPanelComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if ( changes['currentSong'] ) {
       if ( this.currentSong ) {
+        this.updateLyric();
         if ( this.show ) {
           this.scrollToCurrent();
         }
@@ -55,11 +63,7 @@ export class SongPanelComponent implements OnInit, OnChanges {
     if ( changes['show'] ) {
       if ( ! changes['show'].firstChange && this.show ) {
         this.scroll.first.refreshScroll();
-        // timer(80).subscribe(() => {
-        //   if ( this.currentSong ) {
-        //     this.scrollToCurrent();
-        //   }
-        // });
+        this.scroll.last.refreshScroll();
         this.win.setTimeout(() => {
           if ( this.currentSong ) {
             this.scrollToCurrent();
@@ -67,6 +71,18 @@ export class SongPanelComponent implements OnInit, OnChanges {
         }, 80)
       }
     }
+  }
+
+  private updateLyric(): void {
+    this.songService.getLyric(this.currentSong.id).subscribe(res => {
+      if ( ! res ) {
+        this.currentLyric = [];
+        return;
+      }
+      const lyricProcessor = new LyricProcessor(res);
+      this.currentLyric = lyricProcessor.formattedLines;
+      this.scroll.last.refreshScroll();
+    });
   }
 
   public onScrollEnd(scrollEnd :number) {
