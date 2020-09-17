@@ -85,6 +85,7 @@ export class SongPanelComponent implements OnInit, OnChanges {
   }
 
   private updateLyric(): void {
+    this.clearLyric();
     this.songService.getLyric(this.currentSong.id).subscribe(res => {
       if ( ! res ) {
         this.currentLyric = [];
@@ -94,7 +95,6 @@ export class SongPanelComponent implements OnInit, OnChanges {
       this.currentLyric = this.lyric.formattedLines;
       this.scroll.last.refreshScroll();
 
-      this.lyricRefs = null;
       this.handlelyric();
       this.scroll.last.scrollTo(0, 0);
 
@@ -117,6 +117,14 @@ export class SongPanelComponent implements OnInit, OnChanges {
         }
       }
     })
+  }
+
+  private clearLyric(): void {
+    if ( this.lyric ) this.lyric.stop();
+    this.lyric = null;
+    this.lyricRefs = null;
+    this.currentLineNum = 0;
+    this.currentLyric = [];
   }
 
   public onScrollEnd(scrollEnd :number) {

@@ -145,7 +145,7 @@ export class LyricProcessor {
     }
   }
 
-  private stop():void {
+  public stop():void {
     if ( this.playing ) {
       this.playing = false;
     }
