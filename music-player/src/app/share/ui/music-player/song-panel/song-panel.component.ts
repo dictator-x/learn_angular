@@ -94,8 +94,8 @@ export class SongPanelComponent implements OnInit, OnChanges {
       this.lyric = new LyricProcessor(res);
       this.currentLyric = this.lyric.formattedLines;
       this.scroll.last.refreshScroll();
-
-      this.handlelyric();
+      const startLine = res.tlyric ? 1 : 2;
+      this.handlelyric(startLine);
       this.scroll.last.scrollTo(0, 0);
 
       if ( this.playing ) {
@@ -104,16 +104,20 @@ export class SongPanelComponent implements OnInit, OnChanges {
     });
   }
 
-  private handlelyric(): void {
+  private handlelyric(startLine=2): void {
     this.lyric.handler.subscribe(({ lineNum }) => {
       if ( ! this.lyricRefs ) {
-        this.lyricRefs = this.scroll.last.el.nativeElement.querySelectorAll('ul, li');
+        this.lyricRefs = this.scroll.last.el.nativeElement.querySelectorAll('ul li');
       }
       if ( this.lyricRefs.length ) {
         this.currentLineNum = lineNum;
-        const targetLine = this.lyricRefs[lineNum];
-        if ( targetLine ) {
-          this.scroll.last.scrollToElement(targetLine, 300, false, false);
+        if ( lineNum > startLine ) {
+          const targetLine = this.lyricRefs[lineNum - startLine];
+          if ( targetLine ) {
+            this.scroll.last.scrollToElement(targetLine, 300, false, false);
+          }
+        } else {
+          this.scroll.last.scrollTo(0, 0);
         }
       }
     })
