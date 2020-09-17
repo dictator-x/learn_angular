@@ -1,4 +1,4 @@
-import { Subject } from 'rxjs';
+import { timer, Subject, Subscription } from 'rxjs';
 
 import { Lyric } from 'src/app/data-types/common.types'
 
@@ -27,7 +27,7 @@ export class LyricProcessor {
   private curNum: number;
   private startStamp: number;
   private pauseStamp: number;
-  private timer: any;
+  private timer$: Subscription;
 
   public handler = new Subject<Handler>();
 
@@ -107,20 +107,24 @@ export class LyricProcessor {
     }
 
     if ( this.curNum < this.formattedLines.length ) {
-      clearTimeout(this.timer);
+      this.clearTimer();
       this.playReset();
     }
   }
 
+  private clearTimer() {
+    this.timer$ && this.timer$.unsubscribe();
+    this.timer$ = null;
+  }
   private playReset() {
     let line = this.formattedLines[this.curNum];
     const delay = line.time - (Date.now() - this.startStamp);
-    this.timer = setTimeout(() => {
+    this.timer$ = timer(delay).subscribe(()=> {
       this.callHandler(this.curNum++);
       if ( this.curNum < this.formattedLines.length && this.playing) {
         this.playReset();
       }
-    }, delay);
+    });
   }
 
   private callHandler(i: number):void {
@@ -154,7 +158,7 @@ export class LyricProcessor {
     if ( this.playing ) {
       this.playing = false;
     }
-    clearTimeout(this.timer);
+    this.clearTimer();
   }
 
   public seek(time: number): void {

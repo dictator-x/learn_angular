@@ -47,7 +47,7 @@
       </ul>
     </app-scroll>
 
-    <app-scroll class="list-lyric">
+    <app-scroll class="list-lyric", [data]="currentLyric">
       <ul>
         <li
             *ngFor = "let line of currentLyric; index as i"

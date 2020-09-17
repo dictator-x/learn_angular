@@ -260,6 +260,9 @@ export class MusicPlayerComponent implements OnInit, AfterViewInit {
   private loop(): void {
     this.audioEl.currentTime = 0;
     this.play();
+    if ( this.songPanel ) {
+      this.songPanel.seekLyric(0);
+    }
   }
 
   get picUrl(): string {
