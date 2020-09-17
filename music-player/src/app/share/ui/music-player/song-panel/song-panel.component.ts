@@ -124,11 +124,19 @@ export class SongPanelComponent implements OnInit, OnChanges {
   }
 
   private clearLyric(): void {
-    if ( this.lyric ) this.lyric.stop();
-    this.lyric = null;
-    this.lyricRefs = null;
-    this.currentLineNum = 0;
-    this.currentLyric = [];
+    if ( this.lyric ) {
+      this.lyric.stop();
+      this.lyric = null;
+      this.lyricRefs = null;
+      this.currentLineNum = 0;
+      this.currentLyric = [];
+    }
+  }
+
+  public seekLyric(time: number): void {
+    if ( this.lyric ) {
+      this.lyric.seek(time);
+    }
   }
 
   public onScrollEnd(scrollEnd :number) {

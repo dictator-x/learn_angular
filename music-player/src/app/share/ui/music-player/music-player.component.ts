@@ -15,6 +15,7 @@ import { Song } from 'src/app/data-types/common.types';
 import { PlayMode } from './player.types';
 import { setCurrentIndex, setPlayMode, setPlayList } from 'src/app/store/actions/player.actions';
 import { shuffle } from 'src/app/util/array';
+import { SongPanelComponent } from './song-panel/song-panel.component';
 
 const modeTypes: PlayMode[] = [
   {
@@ -61,6 +62,7 @@ export class MusicPlayerComponent implements OnInit, AfterViewInit {
   public modeCount: number = 0;
 
   @ViewChild('audio', { static: true }) private audio: ElementRef;
+  @ViewChild(SongPanelComponent, { static: false }) private songPanel: SongPanelComponent;
   private audioEl: HTMLAudioElement;
 
   constructor(
@@ -148,7 +150,13 @@ export class MusicPlayerComponent implements OnInit, AfterViewInit {
   }
 
   public onPercentChange(per: number) {
-    this.audioEl.currentTime = this.duration * (per / 100);
+    if ( this.currentSong ) {
+      const time = this.duration * (per /100);
+      this.audioEl.currentTime = time;
+      if ( this.songPanel ) {
+        this.songPanel.seekLyric(time * 1000);
+      }
+    }
   }
 
   public onTimeUpdate(e: Event): void {

@@ -94,15 +94,18 @@ export class LyricProcessor {
   }
 
   //TODO: rework on this.
-  public play(startTime=0) {
+  public play(startTime=0, skip = false) {
     if ( ! this.formattedLines.length ) return;
     if ( ! this.playing ) {
       this.playing = true;
     }
 
     this.curNum = this.findCurNum(startTime);
-    console.log(this.curNum);
     this.startStamp = Date.now() - startTime;
+    if ( ! skip ) {
+      this.callHandler(this.curNum-1);
+    }
+
     if ( this.curNum < this.formattedLines.length ) {
       clearTimeout(this.timer);
       this.playReset();
@@ -121,11 +124,13 @@ export class LyricProcessor {
   }
 
   private callHandler(i: number):void {
-    this.handler.next({
-      originalTxt: this.formattedLines[i].originalTxt,
-      bilingualTxt: this.formattedLines[i].bilingualTxt,
-      lineNum: i
-    });
+    if ( i > 0 ) {
+      this.handler.next({
+        originalTxt: this.formattedLines[i].originalTxt,
+        bilingualTxt: this.formattedLines[i].bilingualTxt,
+        lineNum: i
+      });
+    }
   }
 
   private findCurNum(time: number): number {
@@ -138,17 +143,21 @@ export class LyricProcessor {
     this.playing = playing;
     if ( playing ) {
       const startTime = (this.pauseStamp || now) - (this.startStamp || now);
-      this.play(startTime);
+      this.play(startTime, true);
     } else {
       this.stop();
       this.pauseStamp = now;
     }
   }
 
-  public stop():void {
+  public stop() : void {
     if ( this.playing ) {
       this.playing = false;
     }
     clearTimeout(this.timer);
+  }
+
+  public seek(time: number): void {
+    this.play(time);
   }
 }
