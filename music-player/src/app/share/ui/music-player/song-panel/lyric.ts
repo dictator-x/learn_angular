@@ -128,13 +128,11 @@ export class LyricProcessor {
   }
 
   private callHandler(i: number):void {
-    if ( i > 0 ) {
-      this.handler.next({
-        originalTxt: this.formattedLines[i].originalTxt,
-        bilingualTxt: this.formattedLines[i].bilingualTxt,
-        lineNum: i
-      });
-    }
+    this.handler.next({
+      originalTxt: this.formattedLines[i].originalTxt,
+      bilingualTxt: this.formattedLines[i].bilingualTxt,
+      lineNum: i
+    });
   }
 
   private findCurNum(time: number): number {

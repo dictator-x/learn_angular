@@ -117,17 +117,17 @@ export class MusicPlayerComponent implements OnInit, AfterViewInit {
       let list = this.songList.slice();
       if ( mode.type === 'random' ) {
         list = shuffle<Song>(this.songList);
-        this.updateCurrentIndex(list, this.currentSong);
+        // this.updateCurrentIndex(this.songList, this.currentSong);
         this.store.dispatch(setPlayList({ playList: list }));
       } else if ( mode.type === 'loop' ) {
-        this.updateCurrentIndex(list, this.currentSong);
+        // this.updateCurrentIndex(this.songList, this.currentSong);
         this.store.dispatch(setPlayList({ playList: list }));
       }
     }
   }
 
-  private updateCurrentIndex(list: Song[], currentSong: Song): void {
-    const newIndex = list.findIndex(item => item.id === currentSong.id);
+  private updateCurrentIndex(currentSong: Song): void {
+    const newIndex = this.songList.findIndex(item => item.id === currentSong.id);
     this.store.dispatch(setCurrentIndex({ currentIndex: newIndex }));
   }
 
@@ -209,7 +209,7 @@ export class MusicPlayerComponent implements OnInit, AfterViewInit {
   }
 
   public onSongChange(song: Song): void {
-    this.updateCurrentIndex(this.songList, song);
+    this.updateCurrentIndex(song);
   }
 
   public onVolumeChange(volumePer: number): void {
@@ -235,22 +235,25 @@ export class MusicPlayerComponent implements OnInit, AfterViewInit {
     }
   }
 
+  //TODO: refactor random mode.
   public onPrev(): void {
     if ( ! this.songReady ) return;
-    const newIndex = this.currentIndex === 0 ? this.playList.length - 1 : this.currentIndex - 1;
-    this.updateIndex(newIndex);
+    const playListIndex = this.getCurrentPlayListIndex(this.currentSong);
+    const newIndex = playListIndex === 0 ? this.playList.length - 1 : playListIndex - 1;
+    this.updateCurrentIndex(this.playList[newIndex]);
   }
 
   public onNext(): void {
     if ( ! this.songReady ) return;
-    const newIndex = this.currentIndex === this.playList.length - 1 ? 0 : this.currentIndex + 1;
-    this.updateIndex(newIndex);
+    const playListIndex = this.getCurrentPlayListIndex(this.currentSong);
+    const newIndex = playListIndex === this.playList.length - 1 ? 0 : playListIndex + 1;
+    this.updateCurrentIndex(this.playList[newIndex]);
   }
 
-  private updateIndex(index: number): void {
-    this.store.dispatch(setCurrentIndex({ currentIndex: index }));
-    this.songReady = false;
+  private getCurrentPlayListIndex(song: Song): number {
+    return this.playList.findIndex(item => item.id === song.id);
   }
+
 
   private play(): void {
     this.audioEl.play();
