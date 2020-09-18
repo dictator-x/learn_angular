@@ -9,7 +9,7 @@ import {
   Inject
 } from '@angular/core';
 
-import { timer } from 'rxjs';
+import { timer, Subscription } from 'rxjs';
 
 import { Song } from 'src/app/data-types/common.types';
 import { ScrollComponent } from '../scroll/scroll.component';
@@ -39,6 +39,7 @@ export class SongPanelComponent implements OnInit, OnChanges {
 
   private lyric: LyricProcessor;
   private lyricRefs: NodeList;
+  private lyricSubscription: Subscription;
 
   @ViewChildren(ScrollComponent) private scroll: QueryList<ScrollComponent>;
 
@@ -54,7 +55,6 @@ export class SongPanelComponent implements OnInit, OnChanges {
   ){}
 
   ngOnInit(): void {
-    // console.log(this.win);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -85,8 +85,8 @@ export class SongPanelComponent implements OnInit, OnChanges {
   }
 
   private updateLyric(): void {
-    this.clearLyric();
     this.songService.getLyric(this.currentSong.id).subscribe(res => {
+    this.clearLyric();
       if ( ! res ) {
         this.currentLyric = [];
         return;
@@ -106,11 +106,17 @@ export class SongPanelComponent implements OnInit, OnChanges {
 
   private handlelyric(startLine=2): void {
     //TODO: unsubscribe handler when lyric change.
-    this.lyric.handler.subscribe(({ lineNum }) => {
+    this.lyricSubscription = this.lyric.handler.subscribe(({ originalTxt, lineNum }) => {
       if ( ! this.lyricRefs ) {
         // Handle lyric after the view has been random
-        this.lyricRefs = this.scroll.last.el.nativeElement.querySelectorAll('ul li');
+        const lyricDOM: NodeList = this.scroll.last.el.nativeElement.querySelectorAll('ul li');
+        if ( lyricDOM.length === this.currentLyric.length ) {
+          this.lyricRefs = lyricDOM;
+        }
       }
+
+      if ( ! this.lyricRefs ) return;
+
       if ( this.lyricRefs.length ) {
         this.currentLineNum = lineNum;
         if ( lineNum > startLine ) {
@@ -126,13 +132,13 @@ export class SongPanelComponent implements OnInit, OnChanges {
   }
 
   private clearLyric(): void {
-    if ( this.lyric ) {
-      this.lyric.stop();
-      this.lyric = null;
-      this.lyricRefs = null;
-      this.currentLineNum = 0;
-      this.currentLyric = [];
-    }
+    this.lyric && this.lyric.stop();
+    this.lyric = null;
+    this.lyricRefs = null;
+    this.currentLineNum = 0;
+    this.currentLyric = [];
+    this.lyricSubscription && this.lyricSubscription.unsubscribe();
+    this.lyricSubscription = null;
   }
 
   public seekLyric(time: number): void {

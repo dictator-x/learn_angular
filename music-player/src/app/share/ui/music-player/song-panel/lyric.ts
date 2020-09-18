@@ -103,14 +103,14 @@ export class LyricProcessor {
     this.curNum = this.findCurNum(startTime);
     this.startStamp = Date.now() - startTime;
     if ( ! skip ) {
-      this.callHandler(this.curNum-1);
+      this.callHandler(this.curNum);
     }
 
     if ( this.curNum < this.formattedLines.length ) {
       this.clearTimer();
       this.playReset();
     }
-  }
+    }
 
   private clearTimer() {
     this.timer$ && this.timer$.unsubscribe();
