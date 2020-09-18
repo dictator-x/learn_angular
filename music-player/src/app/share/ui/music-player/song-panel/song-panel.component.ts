@@ -42,6 +42,7 @@ export class SongPanelComponent implements OnInit, OnChanges {
   private lyric: LyricProcessor;
   private lyricRefs: NodeList;
   private lyricSubscription: Subscription;
+  private startLine: number = 2;
 
   @ViewChildren(ScrollComponent) private scroll: QueryList<ScrollComponent>;
 
@@ -76,6 +77,11 @@ export class SongPanelComponent implements OnInit, OnChanges {
           if ( this.currentSong ) {
             this.scrollToCurrent();
           }
+          if ( this.lyricRefs ) {
+            const offset = this.currentLineNum - this.startLine;
+            const targetLine = this.lyricRefs[offset < 0 ? 0 : offset];
+            this.scroll.last.scrollToElement(targetLine, 0, false, false);
+          }
         }, 80)
       }
     }
@@ -96,8 +102,8 @@ export class SongPanelComponent implements OnInit, OnChanges {
       this.lyric = new LyricProcessor(res);
       this.currentLyric = this.lyric.formattedLines;
       this.scroll.last.refreshScroll();
-      const startLine = res.tlyric ? 1 : 2;
-      this.handlelyric(startLine);
+      this.startLine = res.tlyric ? 1 : 2;
+      this.handlelyric(this.startLine);
       this.scroll.last.scrollTo(0, 0);
 
       if ( this.playing ) {

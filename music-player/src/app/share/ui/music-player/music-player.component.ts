@@ -186,7 +186,6 @@ export class MusicPlayerComponent implements OnInit, AfterViewInit {
   }
 
   public onClickOutSide(): void {
-    console.log('aa')
     this.showVolumePanel = false;
     this.showSongListPanel = false;
     (this.showVolumePanel || this.showSongListPanel) ? this.bindFlag = true : this.bindFlag = false;
