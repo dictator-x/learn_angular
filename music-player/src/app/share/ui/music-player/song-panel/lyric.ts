@@ -2,7 +2,8 @@ import { timer, Subject, Subscription } from 'rxjs';
 
 import { Lyric } from 'src/app/data-types/common.types'
 
-const timeExp = /\[(\d{2}):(\d{2})\.(\d{2,3})\]/;
+// const timeExp = /\[(\d{2}):(\d{2})\.(\d{2,3})?\]/;
+const timeExp = /\[(\d{2}):(\d{2})(\.\d{2,3})?\]/;
 
 export interface BaseLyricLine {
   originalTxt: string;
@@ -83,7 +84,8 @@ export class LyricProcessor {
       const originalTxt = line.replace(timeExp, '').trim();
       const bilingualTxt = null;
       if ( originalTxt ) {
-        const secondCount = result[3] || '00';
+        let secondCount = result[3] || '00';
+        secondCount = secondCount.replace(/\./, '').trim();
         const len = secondCount.length;
         const _secondCount = len > 2 ? parseInt(secondCount) : parseInt(secondCount) * 10;
         const time = Number(result[1]) * 60 * 1000 + Number(result[2])* 1000 + _secondCount;
