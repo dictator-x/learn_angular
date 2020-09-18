@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, Inject } from 
 import { Subscription, fromEvent } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { DOCUMENT } from '@angular/common';
+import { NzModalService } from 'ng-zorro-antd';
 
 import { AppStoreModule } from 'src/app/store';
 import {
@@ -13,8 +14,13 @@ import {
 } from 'src/app/store/selectors/player.selector';
 import { Song } from 'src/app/data-types/common.types';
 import { PlayMode } from './player.types';
-import { setCurrentIndex, setPlayMode, setPlayList } from 'src/app/store/actions/player.actions';
-import { shuffle } from 'src/app/util/array';
+import {
+  setCurrentIndex,
+  setPlayMode,
+  setPlayList,
+  setSongList
+} from 'src/app/store/actions/player.actions';
+import { shuffle, findIndex } from 'src/app/util/array';
 import { SongPanelComponent } from './song-panel/song-panel.component';
 
 const modeTypes: PlayMode[] = [
@@ -67,7 +73,8 @@ export class MusicPlayerComponent implements OnInit, AfterViewInit {
 
   constructor(
     private store: Store<AppStoreModule>,
-    @Inject(DOCUMENT) private doc: Document
+    @Inject(DOCUMENT) private doc: Document,
+    private nzModelService: NzModalService
   ){}
 
   ngOnInit(): void {
@@ -137,7 +144,7 @@ export class MusicPlayerComponent implements OnInit, AfterViewInit {
 
   public onEnded(): void {
     this.playing = false;
-    if ( this.currentMode.type === 'singleLoop' ) {
+    if ( this.currentMode.type === 'singleLoop' || this.songList.length == 1 ) {
       this.loop();
     } else {
       this.onNext();
@@ -274,5 +281,36 @@ export class MusicPlayerComponent implements OnInit, AfterViewInit {
 
   get duration(): number {
     return this.currentSong ? this.currentSong.dt / 1000 : null;
+  }
+
+  public onDeleteSong(song: Song): void {
+    const songList = this.songList.slice();
+    const playList = this.playList.slice();
+    let currentIndex = this.currentIndex;
+
+    const songIndex = findIndex(songList, song);
+    songList.splice(songIndex, 1);
+    const playIndex = findIndex(playList, song);
+    playList.splice(playIndex, 1);
+
+    if ( currentIndex >= songIndex ) {
+      currentIndex--;
+      currentIndex < 0 ? currentIndex = 0 : currentIndex;
+    }
+
+    this.store.dispatch(setSongList({ songList }));
+    this.store.dispatch(setPlayList({ playList }));
+    this.store.dispatch(setCurrentIndex({ currentIndex }));
+  }
+
+  public onClearSong(): void {
+    this.nzModelService.confirm({
+      nzTitle: 'confirm remove playlist',
+      nzOnOk: () => {
+      this.store.dispatch(setSongList({ songList:[] }));
+      this.store.dispatch(setPlayList({ playList:[] }));
+      this.store.dispatch(setCurrentIndex({ currentIndex: -1 }));
+      }
+    })
   }
 }

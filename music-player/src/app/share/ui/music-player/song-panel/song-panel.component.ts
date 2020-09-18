@@ -36,6 +36,8 @@ export class SongPanelComponent implements OnInit, OnChanges {
 
   @Output() onClose = new EventEmitter<void>();
   @Output() onSongChange = new EventEmitter<Song>();
+  @Output() onDeleteSong = new EventEmitter<Song>();
+  @Output() onClearSong = new EventEmitter<void>();
 
   private lyric: LyricProcessor;
   private lyricRefs: NodeList;
