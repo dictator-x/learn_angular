@@ -1,5 +1,7 @@
 <div class="m-player"
-    (click) = "selfClick = true"
+  appClickoutside
+  (onClickOutSide) = "onClickOutSide()"
+  [bindFlag] = "bindFlag"
 >
   <div class="lock">
     <div class="left"><i></i></div>

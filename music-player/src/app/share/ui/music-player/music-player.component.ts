@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, Inject } from '@angular/core';
 import { Subscription, fromEvent } from 'rxjs';
 import { Store, select } from '@ngrx/store';
-import { DOCUMENT } from '@angular/common';
 import { NzModalService } from 'ng-zorro-antd';
 
 import { AppStoreModule } from 'src/app/store';
@@ -62,8 +61,7 @@ export class MusicPlayerComponent implements OnInit, AfterViewInit {
   public showVolumePanel: boolean = false;
   public showSongListPanel: boolean = false;
 
-  public selfClick: boolean = false;
-  private winClick: Subscription;
+  public bindFlag: boolean = false;
 
   public currentMode: PlayMode;
   public modeCount: number = 0;
@@ -74,7 +72,6 @@ export class MusicPlayerComponent implements OnInit, AfterViewInit {
 
   constructor(
     private store: Store<AppStoreModule>,
-    @Inject(DOCUMENT) private doc: Document,
     private nzModelService: NzModalService,
     private batchActionsService: BatchActionsService
   ){}
@@ -188,33 +185,16 @@ export class MusicPlayerComponent implements OnInit, AfterViewInit {
     }
   }
 
+  public onClickOutSide(): void {
+    console.log('aa')
+    this.showVolumePanel = false;
+    this.showSongListPanel = false;
+    (this.showVolumePanel || this.showSongListPanel) ? this.bindFlag = true : this.bindFlag = false;
+  }
+
   private togglePanel(type: string): void {
     this[type] = ! this[type];
-    if ( this.showVolumePanel || this.showSongListPanel ) {
-      this.bindDocumentClickListener();
-    } else {
-      this.unBindDocumentClickListener();
-    }
-  }
-
-  private bindDocumentClickListener(): void {
-    if ( ! this.winClick ) {
-      this.winClick = fromEvent(this.doc, 'click').subscribe(() => {
-        if ( ! this.selfClick ) {
-          this.showVolumePanel = false;
-          this.showSongListPanel = false;
-          this.unBindDocumentClickListener();
-        }
-        this.selfClick = false;
-      });
-    }
-  }
-
-  private unBindDocumentClickListener() {
-    if ( this.winClick ) {
-      this.winClick.unsubscribe();
-      this.winClick = null;
-    }
+    (this.showVolumePanel || this.showSongListPanel) ? this.bindFlag = true : this.bindFlag = false;
   }
 
   public onSongChange(song: Song): void {
@@ -297,4 +277,5 @@ export class MusicPlayerComponent implements OnInit, AfterViewInit {
       }
     })
   }
+
 }

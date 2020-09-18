@@ -7,13 +7,15 @@ import { MusicProgressBarModule } from '../music-progress-bar/music-progress-bar
 import { FormatTimePipe } from '../../pipe/format-time.pipe';
 import { SongPanelComponent } from './song-panel/song-panel.component';
 import { ScrollComponent } from './scroll/scroll.component'
+import { ClickoutsideDirective } from '../../directive/clickoutside.directive'
 
 @NgModule({
   declarations: [
     MusicPlayerComponent,
     FormatTimePipe,
     SongPanelComponent,
-    ScrollComponent
+    ScrollComponent,
+    ClickoutsideDirective
   ],
   imports: [
     MusicProgressBarModule,
