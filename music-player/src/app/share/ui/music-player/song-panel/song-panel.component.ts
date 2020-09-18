@@ -105,8 +105,10 @@ export class SongPanelComponent implements OnInit, OnChanges {
   }
 
   private handlelyric(startLine=2): void {
+    //TODO: unsubscribe handler when lyric change.
     this.lyric.handler.subscribe(({ lineNum }) => {
       if ( ! this.lyricRefs ) {
+        // Handle lyric after the view has been random
         this.lyricRefs = this.scroll.last.el.nativeElement.querySelectorAll('ul li');
       }
       if ( this.lyricRefs.length ) {
